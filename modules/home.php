@@ -42,11 +42,11 @@
 
             <!-- Service Links -->
             <div class="service-links">
-                <a href="index.php?p=buy-instagram-followers" class="service-link">BUY INSTAGRAM FOLLOWERS</a>
-                <a href="index.php?p=buy-instagram-likes" class="service-link">BUY INSTAGRAM LIKES</a>
-                <a href="index.php?p=buy-instagram-views" class="service-link">BUY INSTAGRAM VIEWS</a>
-                <a href="index.php?p=buy-tiktok-followers" class="service-link">BUY TIKTOK FOLLOWERS</a>
-                <a href="index.php?p=buy-tiktok-likes" class="service-link">BUY TIKTOK LIKES</a>
+                <a href="/buy-instagram-followers" class="service-link">BUY INSTAGRAM FOLLOWERS</a>
+                <a href="/buy-instagram-likes" class="service-link">BUY INSTAGRAM LIKES</a>
+                <a href="/buy-instagram-views" class="service-link">BUY INSTAGRAM VIEWS</a>
+                <a href="/buy-tiktok-followers" class="service-link">BUY TIKTOK FOLLOWERS</a>
+                <a href="/buy-tiktok-likes" class="service-link">BUY TIKTOK LIKES</a>
             </div>
 
             <!-- Live Notification -->
@@ -208,7 +208,7 @@
                         'today' => '+847 today',
                         'avatars' => [56, 41, 26],
                         'features' => ['Real followers (not bots)', 'Starts in literally 60 seconds', 'Choose from 100 to 100,000+', 'We never ask for your password'],
-                        'link' => 'buy-instagram-followers.php'
+                        'link' => '/buy-instagram-followers'
                     ],
                     [
                         'emoji' => '❤️',
@@ -221,7 +221,7 @@
                         'today' => '+623 today',
                         'avatars' => [7, 13, 19],
                         'features' => ['Real people, real likes', 'Works on posts, reels, videos', '50 to 100,000+ available', 'You pick the delivery speed'],
-                        'link' => 'buy-instagram-likes.php'
+                        'link' => '/buy-instagram-likes'
                     ],
                     [
                         'emoji' => '▶️',
@@ -234,7 +234,7 @@
                         'today' => '+412 today',
                         'avatars' => [65, 59, 53],
                         'features' => ['Real video views', 'Instant delivery', 'Boosts algorithm ranking', 'No password required'],
-                        'link' => 'buy-instagram-views.php'
+                        'link' => '/buy-instagram-views'
                     ],
                     [
                         'emoji' => '🎬',
@@ -247,7 +247,7 @@
                         'today' => '+389 today',
                         'avatars' => [60, 49, 38],
                         'features' => ['Real Reels engagement', 'Go viral faster', 'Reach Explore page', 'Safe & secure delivery'],
-                        'link' => 'buy-reels-likes-views.php'
+                        'link' => '/buy-instagram-reels'
                     ],
                     [
                         'emoji' => '🎵',
@@ -260,7 +260,7 @@
                         'today' => '+531 today',
                         'avatars' => [68, 65, 62],
                         'features' => ['Quality TikTok followers', 'Helps you hit the For You page', '100 to 50,000+ followers', 'Natural-looking growth'],
-                        'link' => 'buy-tiktok-followers.php'
+                        'link' => '/buy-tiktok-followers'
                     ],
                     [
                         'emoji' => '👀',
@@ -273,7 +273,7 @@
                         'today' => '+298 today',
                         'avatars' => [45, 19, 63],
                         'features' => ['Real people watching', 'Helps with TikTok SEO', '1,000 to 1M+ views', 'Increases your watch time'],
-                        'link' => 'buy-tiktok-views.php'
+                        'link' => '/buy-tiktok-views'
                     ],
                 ];
 
@@ -369,25 +369,32 @@
         </div>
     </section>
 
-    <!-- Mini Testimonials Section -->
-    <section class="section testimonial-mini-section">
+    <!-- Trust & Testimonials Section -->
+    <section class="section trust-testimonials-section">
         <div class="section-inner">
-            <div class="testimonial-mini-grid">
-                <div class="testimonial-mini-stats">
-                    <div>Trusted by 50K+ customers</div>
-                    <div class="rating-value">4.9</div>
-                    <div class="rating-label">Rating</div>
+            <!-- Trust Header -->
+            <div class="trust-header">
+                <div class="trust-badge-main">
+                    ⭐ Trusted by 50K+ customers
                 </div>
-                <div class="testimonial-mini-stats">
-                    <div class="rating-value">24/7</div>
-                    <div class="rating-label">Support</div>
-                </div>
-                <div class="testimonial-mini-stats">
-                    <div class="rating-value">7yr</div>
-                    <div class="rating-label">Experience</div>
+                <div class="trust-stats-row">
+                    <div class="trust-stat-box">
+                        <div class="trust-stat-value">4.9</div>
+                        <div class="trust-stat-label">Rating</div>
+                    </div>
+                    <div class="trust-stat-box">
+                        <div class="trust-stat-value">24/7</div>
+                        <div class="trust-stat-label">Support</div>
+                    </div>
+                    <div class="trust-stat-box">
+                        <div class="trust-stat-value">7yr</div>
+                        <div class="trust-stat-label">Experience</div>
+                    </div>
                 </div>
             </div>
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 2rem;">
+
+            <!-- Fancy Testimonials Grid -->
+            <div class="fancy-testimonials-grid">
             <?php
             $miniTestimonials = getMiniTestimonials(3);
             foreach ($miniTestimonials as $testimonial):
@@ -396,15 +403,18 @@
                     $imgNumber = (int)$matches[1];
                 }
             ?>
-            <div class="testimonial-mini-card">
-                <div class="testimonial-mini-header">
-                    <img src="https://i.pravatar.cc/48?img=<?php echo $imgNumber; ?>" alt="">
-                    <div>
+            <div class="fancy-testimonial-card">
+                <div class="fancy-testimonial-header">
+                    <img src="https://i.pravatar.cc/48?img=<?php echo $imgNumber; ?>" alt="<?php echo htmlspecialchars($testimonial['name']); ?>" class="fancy-testimonial-avatar">
+                    <div class="fancy-testimonial-user">
                         <h4><?php echo htmlspecialchars($testimonial['name']); ?></h4>
                         <span><?php echo ucfirst(str_replace('_', ' ', $testimonial['service_type'])); ?></span>
                     </div>
                 </div>
-                <p><?php echo htmlspecialchars($testimonial['content']); ?></p>
+                <div class="fancy-testimonial-rating">
+                    ⭐⭐⭐⭐⭐
+                </div>
+                <p class="fancy-testimonial-text"><?php echo htmlspecialchars($testimonial['content']); ?></p>
             </div>
             <?php endforeach; ?>
             </div>
@@ -456,7 +466,7 @@
 
                 <div class="cta-buttons">
                     <a href="#services" class="btn btn-primary btn-lg">🚀 Start Growing Now</a>
-                    <a href="contact.php" class="btn btn-outline btn-lg">💬 Talk to Us</a>
+                    <a href="/contact" class="btn btn-outline btn-lg">💬 Talk to Us</a>
                 </div>
                 <div class="cta-badges">
                     <span>🔒 SSL Secured</span>
