@@ -58,7 +58,8 @@ $faqItems = [
 <!-- ============================================ -->
 <!-- PAGE TITLE                                   -->
 <!-- ============================================ -->
-<main style="flex: 1;">
+ <br clear="both">
+<main style="flex: 1;padding-top:10px">
 <div class="ig-page-title">
     <h1>Buy Instagram Followers to <span>Accelerate Growth</span> 🔥</h1>
     <p>Famoid offers the best way to buy real Instagram followers safely and efficiently with just a few clicks.</p>
