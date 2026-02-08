@@ -1,56 +1,20 @@
 # Enable Rewrite Engine
 RewriteEngine On
-RewriteBase /
 
-# Remove trailing slash if present
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)/$ /$1 [L,R=301]
+# Base directory
+RewriteBase /sgi/
 
-# Contact page - /contact or /contact/
-RewriteRule ^contact/?$ index.php?p=contact [L,QSA]
+# Prevent direct access to modules folder
+RewriteRule ^modules/ - [F,L]
 
-# FAQ page - /frequently-asked-questions or /frequently-asked-questions/
-RewriteRule ^frequently-asked-questions/?$ index.php?p=faq [L,QSA]
+# Allow existing files & folders
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
 
-# Service pages - /buy-instagram-followers etc.
-RewriteRule ^buy-instagram-followers/?$ index.php?p=buy-instagram-followers [L,QSA]
-RewriteRule ^buy-instagram-likes/?$ index.php?p=buy-instagram-likes [L,QSA]
-RewriteRule ^buy-instagram-views/?$ index.php?p=buy-instagram-views [L,QSA]
-RewriteRule ^buy-instagram-reels/?$ index.php?p=buy-instagram-reels [L,QSA]
-RewriteRule ^buy-tiktok-followers/?$ index.php?p=buy-tiktok-followers [L,QSA]
-RewriteRule ^buy-tiktok-likes/?$ index.php?p=buy-tiktok-likes [L,QSA]
-RewriteRule ^buy-tiktok-views/?$ index.php?p=buy-tiktok-views [L,QSA]
-RewriteRule ^buy-facebook-followers/?$ index.php?p=buy-facebook-followers [L,QSA]
-RewriteRule ^buy-facebook-likes/?$ index.php?p=buy-facebook-likes [L,QSA]
+# SEO friendly URLs
+# /about-us  → index.php?p=about-us
+RewriteRule ^([a-zA-Z0-9-]+)/?$ index.php?p=$1 [L,QSA]
 
-# If the request is for an actual file or directory, serve it directly
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-
-# Serve index.php for the homepage
-RewriteRule ^$ index.php [L,QSA]
-
-# Security: Prevent direct access to config files
-<FilesMatch "\.(ini|config|conf|inc|log|sql|bak|backup)$">
-    Order allow,deny
-    Deny from all
-</FilesMatch>
-
-# Enable GZIP compression
-<IfModule mod_deflate.c>
-    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
-</IfModule>
-
-# Browser Caching
-<IfModule mod_expires.c>
-    ExpiresActive On
-    ExpiresByType image/jpg "access plus 1 year"
-    ExpiresByType image/jpeg "access plus 1 year"
-    ExpiresByType image/gif "access plus 1 year"
-    ExpiresByType image/png "access plus 1 year"
-    ExpiresByType text/css "access plus 1 month"
-    ExpiresByType application/pdf "access plus 1 month"
-    ExpiresByType text/javascript "access plus 1 month"
-    ExpiresByType application/javascript "access plus 1 month"
-    ExpiresByType image/x-icon "access plus 1 year"
-</IfModule>
+# Default home page
+RewriteRule ^$ index.php [L]

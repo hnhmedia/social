@@ -7,8 +7,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/service-pages.css">
+    <link rel="stylesheet" href="/sgi/css/style.css">
+    <link rel="stylesheet" href="/sgi/css/service-pages.css">
 </head>
 <body>
     <?php
@@ -35,14 +35,14 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="navbar-inner">
-            <a href="index.php" class="logo">Famoid</a>
+            <a href="/sgi/" class="logo">Famoid</a>
             <ul class="nav-links">
-                <li><a href="index.php#services">Services</a></li>
-                <li><a href="index.php#faq">FAQ</a></li>
-                <li><a href="blog.php">Blog</a></li>
-                <li><a href="contact.php">Contact</a></li>
+                <li><a href="/sgi/#services">Services</a></li>
+                <!-- li><a href="/sgi/frequently-asked-questions">FAQ</a></li -->
+                <li><a href="/sgi/blog">Blog</a></li>
+                <li><a href="/sgi/contact">Contact</a></li>
                 <?php if ($loggedInUser): ?>
-                    <li><a href="dashboard.php">Dashboard</a></li>
+                    <li><a href="/sgi/dashboard">Dashboard</a></li>
                 <?php endif; ?>
             </ul>
             <div class="nav-right">
@@ -65,12 +65,12 @@
                             <?php echo htmlspecialchars($loggedInUser['name']); ?> ▾
                         </button>
                         <div class="account-menu">
-                            <a href="dashboard.php">📊 Dashboard</a>
-                            <a href="orders.php">📦 My Orders</a>
-                            <a href="profile.php">👤 Profile</a>
-                            <a href="settings.php">⚙️ Settings</a>
+                            <a href="/sgi/dashboard">📊 Dashboard</a>
+                            <a href="/sgi/orders">📦 My Orders</a>
+                            <a href="/sgi/profile">👤 Profile</a>
+                            <a href="/sgi/settings">⚙️ Settings</a>
                             <div class="menu-divider"></div>
-                            <a href="logout.php">🚪 Logout</a>
+                            <a href="/sgi/logout">🚪 Logout</a>
                         </div>
                     </div>
                 <?php else: ?>
@@ -78,12 +78,12 @@
                     <div class="account-dropdown">
                         <button class="btn btn-outline account-btn">My Account ▾</button>
                         <div class="account-menu">
-                            <a href="login.php">🔐 Login</a>
-                            <a href="register.php">📝 Register</a>
-                            <a href="track-order.php">📦 Track Order</a>
+                            <a href="/sgi/login">🔐 Login</a>
+                            <a href="/sgi/register">📝 Register</a>
+                            <a href="/sgi/track-order">📦 Track Order</a>
                             <div class="menu-divider"></div>
-                            <a href="help.php">❓ Help Center</a>
-                            <a href="contact.php">💬 Contact Support</a>
+                            <a href="/sgi/help">❓ Help Center</a>
+                            <a href="/sgi/contact">💬 Contact Support</a>
                         </div>
                     </div>
                 <?php endif; ?>

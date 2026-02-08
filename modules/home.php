@@ -42,11 +42,11 @@
 
             <!-- Service Links -->
             <div class="service-links">
-                <a href="/buy-instagram-followers" class="service-link">BUY INSTAGRAM FOLLOWERS</a>
-                <a href="/buy-instagram-likes" class="service-link">BUY INSTAGRAM LIKES</a>
-                <a href="/buy-instagram-views" class="service-link">BUY INSTAGRAM VIEWS</a>
-                <a href="/buy-tiktok-followers" class="service-link">BUY TIKTOK FOLLOWERS</a>
-                <a href="/buy-tiktok-likes" class="service-link">BUY TIKTOK LIKES</a>
+                <a href="/sgi/buy-instagram-followers" class="service-link">BUY INSTAGRAM FOLLOWERS</a>
+                <a href="/sgi/buy-instagram-likes" class="service-link">BUY INSTAGRAM LIKES</a>
+                <a href="/sgi/buy-instagram-views" class="service-link">BUY INSTAGRAM VIEWS</a>
+                <a href="/sgi/buy-tiktok-followers" class="service-link">BUY TIKTOK FOLLOWERS</a>
+                <a href="/sgi/buy-tiktok-likes" class="service-link">BUY TIKTOK LIKES</a>
             </div>
 
             <!-- Live Notification -->
@@ -208,7 +208,7 @@
                         'today' => '+847 today',
                         'avatars' => [56, 41, 26],
                         'features' => ['Real followers (not bots)', 'Starts in literally 60 seconds', 'Choose from 100 to 100,000+', 'We never ask for your password'],
-                        'link' => '/buy-instagram-followers'
+                        'link' => '/sgi/buy-instagram-followers'
                     ],
                     [
                         'emoji' => '❤️',
@@ -221,7 +221,7 @@
                         'today' => '+623 today',
                         'avatars' => [7, 13, 19],
                         'features' => ['Real people, real likes', 'Works on posts, reels, videos', '50 to 100,000+ available', 'You pick the delivery speed'],
-                        'link' => '/buy-instagram-likes'
+                        'link' => '/sgi/buy-instagram-likes'
                     ],
                     [
                         'emoji' => '▶️',
@@ -234,7 +234,7 @@
                         'today' => '+412 today',
                         'avatars' => [65, 59, 53],
                         'features' => ['Real video views', 'Instant delivery', 'Boosts algorithm ranking', 'No password required'],
-                        'link' => '/buy-instagram-views'
+                        'link' => '/sgi/buy-instagram-views'
                     ],
                     [
                         'emoji' => '🎬',
@@ -247,7 +247,7 @@
                         'today' => '+389 today',
                         'avatars' => [60, 49, 38],
                         'features' => ['Real Reels engagement', 'Go viral faster', 'Reach Explore page', 'Safe & secure delivery'],
-                        'link' => '/buy-instagram-reels'
+                        'link' => '/sgi/buy-instagram-reels'
                     ],
                     [
                         'emoji' => '🎵',
@@ -260,7 +260,7 @@
                         'today' => '+531 today',
                         'avatars' => [68, 65, 62],
                         'features' => ['Quality TikTok followers', 'Helps you hit the For You page', '100 to 50,000+ followers', 'Natural-looking growth'],
-                        'link' => '/buy-tiktok-followers'
+                        'link' => '/sgi/buy-tiktok-followers'
                     ],
                     [
                         'emoji' => '👀',
@@ -273,7 +273,7 @@
                         'today' => '+298 today',
                         'avatars' => [45, 19, 63],
                         'features' => ['Real people watching', 'Helps with TikTok SEO', '1,000 to 1M+ views', 'Increases your watch time'],
-                        'link' => '/buy-tiktok-views'
+                        'link' => '/sgi/buy-tiktok-views'
                     ],
                 ];
 
@@ -466,7 +466,7 @@
 
                 <div class="cta-buttons">
                     <a href="#services" class="btn btn-primary btn-lg">🚀 Start Growing Now</a>
-                    <a href="/contact" class="btn btn-outline btn-lg">💬 Talk to Us</a>
+                    <a href="/sgi/contact" class="btn btn-outline btn-lg">💬 Talk to Us</a>
                 </div>
                 <div class="cta-badges">
                     <span>🔒 SSL Secured</span>

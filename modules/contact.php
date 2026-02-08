@@ -134,17 +134,17 @@
         </div>
         
         <div class="faq-quick-links">
-            <a href="/frequently-asked-questions" class="faq-quick-card">
+            <a href="/sgi/frequently-asked-questions" class="faq-quick-card">
                 <div class="faq-quick-icon">❓</div>
                 <h4>View All FAQs</h4>
                 <p>Browse our complete FAQ section</p>
             </a>
-            <a href="/frequently-asked-questions#payment" class="faq-quick-card">
+            <a href="/sgi/frequently-asked-questions#payment" class="faq-quick-card">
                 <div class="faq-quick-icon">💳</div>
                 <h4>Payment Questions</h4>
                 <p>Payment methods & billing</p>
             </a>
-            <a href="/frequently-asked-questions#delivery" class="faq-quick-card">
+            <a href="/sgi/frequently-asked-questions#delivery" class="faq-quick-card">
                 <div class="faq-quick-icon">🚀</div>
                 <h4>Delivery Info</h4>
                 <p>Delivery times & process</p>

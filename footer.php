@@ -3,13 +3,13 @@
         <div class="footer-inner">
             <div class="footer-grid">
                 <div class="footer-brand">
-                    <a href="index.php" class="logo">Famoid</a>
+                    <a href="/sgi/" class="logo">Famoid</a>
                     <p>Established in 2017, Famoid is a marketing agency that delivers ad-based social media services. We prioritize our customers' experiences, and we're confident that you'll be wholly satisfied once you experience our offerings!</p>
                     <div style="margin-bottom: 1rem;">
                         <p style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 0.5rem;">Newsletter</p>
                         <p style="font-size: 0.8rem; color: #64748b;">Subscribe and get the latest news and promotions from Famoid!</p>
                     </div>
-                    <form class="footer-newsletter" action="subscribe.php" method="POST">
+                    <form class="footer-newsletter" action="/sgi/subscribe" method="POST">
                         <input type="email" name="email" placeholder="Enter your email" required>
                         <button type="submit">Subscribe</button>
                     </form>
@@ -17,44 +17,44 @@
                 <div class="footer-column">
                     <h4>Services</h4>
                     <ul>
-                        <li><a href="buy-instagram-followers.php">Buy Instagram Followers</a></li>
-                        <li><a href="buy-instagram-likes.php">Buy Instagram Likes</a></li>
-                        <li><a href="buy-instagram-views.php">Buy Instagram Views</a></li>
-                        <li><a href="buy-reels-likes-views.php">Buy Reels Likes & Views</a></li>
-                        <li><a href="automatic-likes.php">Automatic Likes</a></li>
-                        <li><a href="buy-tiktok-followers.php">Buy TikTok Followers</a></li>
-                        <li><a href="buy-tiktok-likes.php">Buy TikTok Likes</a></li>
-                        <li><a href="buy-tiktok-views.php">Buy TikTok Views</a></li>
-                        <li><a href="buy-facebook-post-likes.php">Buy Facebook Post Likes</a></li>
-                        <li><a href="buy-facebook-page-likes.php">Buy Facebook Page Likes</a></li>
+                        <li><a href="/sgi/buy-instagram-followers">Buy Instagram Followers</a></li>
+                        <li><a href="/sgi/buy-instagram-likes">Buy Instagram Likes</a></li>
+                        <li><a href="/sgi/buy-instagram-views">Buy Instagram Views</a></li>
+                        <li><a href="/sgi/buy-instagram-reels">Buy Reels Likes & Views</a></li>
+                        <li><a href="/sgi/automatic-likes">Automatic Likes</a></li>
+                        <li><a href="/sgi/buy-tiktok-followers">Buy TikTok Followers</a></li>
+                        <li><a href="/sgi/buy-tiktok-likes">Buy TikTok Likes</a></li>
+                        <li><a href="/sgi/buy-tiktok-views">Buy TikTok Views</a></li>
+                        <li><a href="/sgi/buy-facebook-post-likes">Buy Facebook Post Likes</a></li>
+                        <li><a href="/sgi/buy-facebook-page-likes">Buy Facebook Page Likes</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
                     <h4>Free Tools</h4>
                     <ul>
-                        <li><a href="free-followers.php">Free Followers</a></li>
-                        <li><a href="free-likes.php">Free Likes</a></li>
-                        <li><a href="free-views.php">Free Views</a></li>
-                        <li><a href="instagram-follower-counter.php">Instagram Follower Counter</a></li>
-                        <li><a href="tiktok-counter.php">TikTok Counter</a></li>
+                        <li><a href="/sgi/free-followers">Free Followers</a></li>
+                        <li><a href="/sgi/free-likes">Free Likes</a></li>
+                        <li><a href="/sgi/free-views">Free Views</a></li>
+                        <li><a href="/sgi/instagram-follower-counter">Instagram Follower Counter</a></li>
+                        <li><a href="/sgi/tiktok-counter">TikTok Counter</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
                     <h4>Useful</h4>
                     <ul>
-                        <li><a href="faq.php">FAQ</a></li>
-                        <li><a href="blog.php">Blog</a></li>
-                        <li><a href="affiliate.php">Affiliate Program</a></li>
+                        <li><a href="/sgi/frequently-asked-questions">FAQ</a></li>
+                        <li><a href="/sgi/blog">Blog</a></li>
+                        <li><a href="/sgi/affiliate">Affiliate Program</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
                     <h4>Legal</h4>
                     <ul>
-                        <li><a href="about.php">Famoid's Story</a></li>
-                        <li><a href="privacy-policy.php">Privacy Policy</a></li>
-                        <li><a href="terms-of-service.php">Terms of Service</a></li>
-                        <li><a href="refund-policy.php">Refund Policy</a></li>
-                        <li><a href="cookie-policy.php">Cookie Policy</a></li>
+                        <li><a href="/sgi/about">Famoid's Story</a></li>
+                        <li><a href="/sgi/privacy-policy">Privacy Policy</a></li>
+                        <li><a href="/sgi/terms-of-service">Terms of Service</a></li>
+                        <li><a href="/sgi/refund-policy">Refund Policy</a></li>
+                        <li><a href="/sgi/cookie-policy">Cookie Policy</a></li>
                     </ul>
                 </div>
             </div>
@@ -84,6 +84,6 @@
         </div>
     </footer>
 
-    <script src="js/main.js"></script>
+    <script src="/sgi/js/main.js"></script>
 </body>
 </html>
