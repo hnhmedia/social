@@ -9,14 +9,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/sgi/css/style.css">
     <link rel="stylesheet" href="/sgi/css/service-pages.css">
+    <link rel="stylesheet" href="/sgi/css/mega-menu.css">
 </head>
 <body>
-    <?php
+    <?php // error_reporting(E_ALL);ini_set('display_errors', 1);
+    
     // Include database connection and models
     require_once __DIR__ . '/includes/Database.php';
     require_once __DIR__ . '/includes/testimonial_integration.php';
+    require_once __DIR__ . '/includes/service_integration.php';
     require_once __DIR__ . '/includes/faq_integration.php';
+    require_once __DIR__ . '/includes/mega_menu_integration.php';
     require_once __DIR__ . '/models/User.php';
+    
     
     // Check if user is logged in
     session_start();
@@ -37,7 +42,13 @@
         <div class="navbar-inner">
             <a href="/sgi/" class="logo">Famoid</a>
             <ul class="nav-links">
-                <li><a href="/sgi/#services">Services</a></li>
+                <!-- Dynamic Services Mega Menu -->
+                <li class="mega-menu-container">
+                    <a href="#" class="mega-menu-trigger" id="servicesMenuTrigger">
+                        Services
+                    </a>
+                    <?php echo generateMegaMenuHTML(); ?>
+                </li>
                 <!-- li><a href="/sgi/frequently-asked-questions">FAQ</a></li -->
                 <li><a href="/sgi/blog">Blog</a></li>
                 <li><a href="/sgi/contact">Contact</a></li>
@@ -91,6 +102,9 @@
         </div>
     </nav>
     
+    <!-- Mega Menu Overlay -->
+    <div class="mega-menu-overlay" id="megaMenuOverlay"></div>
+    
     <?php if ($loggedInUser): ?>
         <!-- User notification bar (optional) -->
         <div id="user-notifications" style="display: none; background: linear-gradient(135deg, #7c3aed, #ec4899); color: white; text-align: center; padding: 0.5rem; font-size: 0.9rem;">
@@ -99,7 +113,66 @@
     <?php endif; ?>
     
     <script>
-        // Add some JavaScript for user-specific functionality
+        // Mega Menu JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            const trigger = document.getElementById('servicesMenuTrigger');
+            const dropdown = document.querySelector('.mega-menu-dropdown');
+            const overlay = document.getElementById('megaMenuOverlay');
+            
+            if (trigger && dropdown) {
+                // Toggle menu on click
+                trigger.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const isOpen = dropdown.classList.contains('show');
+                    
+                    if (isOpen) {
+                        closeMenu();
+                    } else {
+                        openMenu();
+                    }
+                });
+                
+                // Close menu when clicking overlay
+                if (overlay) {
+                    overlay.addEventListener('click', closeMenu);
+                }
+                
+                // Close menu when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!trigger.contains(e.target) && !dropdown.contains(e.target)) {
+                        closeMenu();
+                    }
+                });
+                
+                // Prevent menu from closing when clicking inside
+                dropdown.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            }
+            
+            function openMenu() {
+                dropdown.classList.add('show');
+                trigger.classList.add('active');
+                if (overlay) overlay.classList.add('show');
+            }
+            
+            function closeMenu() {
+                dropdown.classList.remove('show');
+                trigger.classList.remove('active');
+                if (overlay) overlay.classList.remove('show');
+            }
+            
+            // Close menu on Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeMenu();
+                }
+            });
+        });
+        
+        // User-specific JavaScript
         <?php if ($loggedInUser): ?>
         // User is logged in - add user-specific JS
         const currentUser = {

@@ -48,7 +48,7 @@ $page = preg_replace('/[^a-z0-9\-]/', '', strtolower($page));
 $moduleFile = __DIR__ . '/modules/' . $page . '.php';
 
 // Include Header
-include 'includes/header.php';
+include 'header.php';
 
 // Route handling
 if (file_exists($moduleFile)) {
