@@ -49,9 +49,10 @@
     padding: 2rem;
     min-width: 900px;
     max-width: 1200px;
-    z-index: 1000;
+    z-index: 1001;
     opacity: 0;
     visibility: hidden;
+    pointer-events: none;
     transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
     transform: translateX(-50%) translateY(-10px);
     margin-top: 0.5rem;
@@ -60,6 +61,7 @@
 .mega-menu-dropdown.show {
     opacity: 1;
     visibility: visible;
+    pointer-events: auto;
     transform: translateX(-50%) translateY(0);
 }
 
@@ -133,13 +135,18 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: transparent;
+    background: rgba(0, 0, 0, 0.1);
     z-index: 999;
-    display: none;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.3s, visibility 0.3s;
 }
 
 .mega-menu-overlay.show {
-    display: block;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
 }
 
 /* Mobile Responsive */

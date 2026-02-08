@@ -140,8 +140,7 @@ function getServicePackages($serviceId, $tagId = null) {
  * 
  * @return array Categories with nested services
  */
-function getAllServicesHierarchy() {
-    try {
+function getAllServicesHierarchy() { 
         $db = Database::getConnection();
         
         // Get categories
@@ -149,8 +148,7 @@ function getAllServicesHierarchy() {
         $db->where('is_active', 1);
         $db->orderBy('display_order', 'ASC');
         $categories = $db->get('services');
-        
-        if ($categories) {
+        print_r($categories);echo "@34";exit;       if ($categories) {
             foreach ($categories as &$category) {
                 // Get services for each category
                 $category['services'] = getServicesByCategory($category['id']);
@@ -159,10 +157,7 @@ function getAllServicesHierarchy() {
         
         return $categories ?: [];
         
-    } catch (Exception $e) {
-        error_log("Error getting services hierarchy: " . $e->getMessage());
-        return [];
-    }
+    
 }
 
 /**
