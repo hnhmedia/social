@@ -132,36 +132,48 @@ $faqItems = [
 
 /* Package Grid */
 .package-select-grid {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; padding: 0.5rem 0;
-    max-width: 620px; margin: 0.75rem auto 0.5rem;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; padding: 0.5rem 0;
+    max-width: 650px; margin: 0.75rem auto 0.5rem;
 }
 .pkg-card {
-    position: relative; min-height: 90px;
-    background: #f3f4f6; border: 2px solid #e5e7eb;
-    border-radius: 0.75rem; padding: 1rem 0.75rem 0.75rem; text-align: center; cursor: pointer;
-    transition: all 0.2s ease; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    position: relative; min-height: 110px;
+    background: #ffffff; border: 2px solid #e5e7eb;
+    border-radius: 0.75rem; padding: 1.5rem 1rem; text-align: center; cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
 }
-.pkg-card:hover { border-color: #0080ff; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,128,255,0.12); }
+.pkg-card:hover { 
+    border-color: #d1d5db; 
+    transform: translateY(-2px); 
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
 .pkg-card.selected {
-    background: #0080ff; border-color: #0080ff; color: #fff;
-    box-shadow: 0 4px 16px rgba(0,128,255,0.3);
+    background: #3b82f6; border-color: #3b82f6; color: #fff;
+    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.25);
+    transform: scale(1.05);
 }
 .pkg-card.selected .pkg-qty { color: #fff; }
-.pkg-card.selected .pkg-label-text { color: rgba(255,255,255,0.9); }
+.pkg-card.selected .pkg-label-text { color: rgba(255, 255, 255, 0.9); }
 .pkg-card .pkg-check {
     position: absolute; top: -8px; right: -8px; width: 24px; height: 24px; border-radius: 50%;
-    background: #0080ff; color: #fff; display: none; align-items: center; justify-content: center;
-    box-shadow: 0 2px 6px rgba(0,128,255,0.4); border: 2px solid #fff;
+    background: #3b82f6; color: #fff; display: none; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.5); border: 2px solid #fff;
 }
 .pkg-card.selected .pkg-check { display: flex; }
-.pkg-qty { font-size: 1.375rem; font-weight: 700; line-height: 1.2; display: block; color: #1e293b; }
-.pkg-label-text { font-weight: 600; margin-top: 2px; white-space: nowrap; display: block; font-size: 0.875rem; color: #4b5563; }
+.pkg-qty { 
+    font-size: 1.875rem; font-weight: 700; line-height: 1; 
+    display: block; color: #1f2937; margin-bottom: 0.25rem;
+}
+.pkg-label-text { 
+    font-weight: 500; white-space: nowrap; 
+    display: block; font-size: 0.875rem; color: #6b7280; 
+}
 .pkg-save-badge {
-    display: inline-block; margin-top: 6px; padding: 2px 8px; border-radius: 4px;
-    font-size: 0.7rem; font-weight: 700; white-space: nowrap;
+    display: inline-block; margin-top: 8px; padding: 3px 10px; border-radius: 4px;
+    font-size: 0.75rem; font-weight: 600; white-space: nowrap;
 }
 .pkg-card:not(.selected) .pkg-save-badge { background: #dbeafe; color: #1d4ed8; }
-.pkg-card.selected .pkg-save-badge { background: rgba(255,255,255,0.25); color: #fff; }
+.pkg-card.selected .pkg-save-badge { background: rgba(255, 255, 255, 0.25); color: #fff; }
 
 /* Price & Buy */
 .order-action { display: flex; flex-direction: column; align-items: center; padding: 1.25rem 5px; }
@@ -399,7 +411,9 @@ $faqItems = [
     .ig-author-meta { justify-content: center; }
     .service-tabs { gap: 4px; }
     .service-tab { padding: 0.5rem 0.75rem; font-size: 0.8rem; }
-    .pkg-card { min-width: 55px; max-width: 70px; }
+    .package-select-grid { gap: 0.5rem; }
+    .pkg-card { padding: 1rem 0.5rem; min-height: 100px; }
+    .pkg-qty { font-size: 1.5rem; }
 }
 @media (max-width: 480px) {
     .ig-howto-steps { grid-template-columns: 1fr; }
@@ -522,10 +536,12 @@ $faqItems = [
                                  onclick="selectPackage(this, <?php echo $pack['qty']; ?>, <?php echo $pack['price']; ?>)"
                                  data-qty="<?php echo $pack['qty']; ?>" data-price="<?php echo $pack['price']; ?>">
                                 <div class="pkg-check">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                 </div>
-                                <span class="pkg-qty"><?php echo number_format($pack['qty']); ?></span>
-                                <span class="pkg-label-text">Followers</span>
+                                <div style="text-align: center;">
+                                    <span class="pkg-qty"><?php echo number_format($pack['qty']); ?></span>
+                                    <span class="pkg-label-text">Followers</span>
+                                </div>
                                 <?php if($pack['label'] && strpos($pack['label'], 'Save') !== false): ?>
                                 <div style="margin-top:5px;height:25px;">
                                     <span class="pkg-save-badge"><?php echo $pack['label']; ?></span>
@@ -883,9 +899,11 @@ function switchTab(tab, btn) {
             saveHtml = '<div style="margin-top:5px;height:25px;"></div>';
         }
         card.innerHTML =
-            '<div class="pkg-check"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4"><polyline points="20 6 9 17 4 12"></polyline></svg></div>' +
-            '<span class="pkg-qty">' + pack.qty.toLocaleString() + '</span>' +
-            '<span class="pkg-label-text">Followers</span>' + saveHtml;
+        '<div class="pkg-check"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>' +
+        '<div style="text-align: center;">' +
+        '<span class="pkg-qty">' + pack.qty.toLocaleString() + '</span>' +
+            '<span class="pkg-label-text">Followers</span>' +
+            '</div>' + saveHtml;
         grid.appendChild(card);
     });
     // Select first package
