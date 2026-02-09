@@ -140,7 +140,8 @@ function getServicePackages($serviceId, $tagId = null) {
  * 
  * @return array Categories with nested services
  */
-function getAllServicesHierarchy() { 
+function getAllServicesHierarchy() {
+    try {
         $db = Database::getConnection();
         
         // Get categories
@@ -158,7 +159,10 @@ function getAllServicesHierarchy() {
         
         return $categories ?: [];
         
-    
+    } catch (Exception $e) {
+        error_log("Error getting services hierarchy: " . $e->getMessage());
+        return [];
+    }
 }
 
 /**
@@ -179,6 +183,35 @@ function formatPackagesForJS($tags) {
                 'qty' => (int)$package['quantity'],
                 'price' => (float)$package['price'],
                 'label' => $package['discount_label'] ?: ''
+            ];
+        }
+        
+        $formatted[$tag['tag_slug']] = $tagPackages;
+    }
+    
+    return $formatted;
+}
+
+/**
+ * Format packages for JavaScript with package codes (CLEAN URL VERSION)
+ * 
+ * @param array $tags Service tags
+ * @return array Formatted packages by tag slug with codes
+ */
+function formatPackagesWithCodes($tags) {
+    $formatted = [];
+    
+    foreach ($tags as $tag) {
+        $packages = getServicePackages($tag['service_id'], $tag['id']);
+        $tagPackages = [];
+        
+        foreach ($packages as $package) {
+            $tagPackages[] = [
+                'id' => (int)$package['id'],
+                'qty' => (int)$package['quantity'],
+                'price' => (float)$package['price'],
+                'label' => $package['discount_label'] ?: '',
+                'code' => $package['package_code'] ?: ''
             ];
         }
         
@@ -296,5 +329,31 @@ function getServiceBreadcrumb($slug) {
     } catch (Exception $e) {
         error_log("Error getting breadcrumb: " . $e->getMessage());
         return $breadcrumb;
+    }
+}
+
+/**
+ * Get package by code (for clean URLs)
+ * 
+ * @param string $code Package code like "2IGF"
+ * @return array|null Package with service details
+ */
+function getPackageByCode($code) {
+    try {
+        $db = Database::getConnection();
+        
+        $db->where('package_code', $code);
+        $db->join('services s', 'service_packages.service_id = s.id', 'LEFT');
+        $db->join('service_tags st', 'service_packages.tag_id = st.id', 'LEFT');
+        
+        $package = $db->getOne('service_packages', 
+            'service_packages.*, s.name as service_name, s.icon as service_icon, s.slug as service_slug, s.service_code, st.tag_name, st.tag_slug'
+        );
+        
+        return $package;
+        
+    } catch (Exception $e) {
+        error_log("Error getting package by code: " . $e->getMessage());
+        return null;
     }
 }
