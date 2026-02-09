@@ -190,92 +190,15 @@
                         <img src="https://i.pravatar.cc/28?img=44" alt="">
                         <img src="https://i.pravatar.cc/28?img=55" alt="">
                     </div>
-                    <span><strong>2,847</strong> orders this week</span>
+                    <span><strong><?php echo number_format(getTotalOrdersThisWeek()); ?></strong> orders this week</span>
                 </div>
             </div>
 
             <div class="services-grid">
                 <?php
-                $services = [
-                    [
-                        'emoji' => '👥',
-                        'title' => 'Buy Instagram Followers',
-                        'subtitle' => 'Get real followers fast',
-                        'badge' => 'Most Popular',
-                        'badge_class' => '',
-                        'rating' => '5.0',
-                        'reviews' => '10,450+',
-                        'today' => '+847 today',
-                        'avatars' => [56, 41, 26],
-                        'features' => ['Real followers (not bots)', 'Starts in literally 60 seconds', 'Choose from 100 to 100,000+', 'We never ask for your password'],
-                        'link' => '/sgi/buy-instagram-followers'
-                    ],
-                    [
-                        'emoji' => '❤️',
-                        'title' => 'Buy Instagram Likes',
-                        'subtitle' => 'Make your posts pop',
-                        'badge' => 'Best Value',
-                        'badge_class' => '',
-                        'rating' => '5.0',
-                        'reviews' => '8,700+',
-                        'today' => '+623 today',
-                        'avatars' => [7, 13, 19],
-                        'features' => ['Real people, real likes', 'Works on posts, reels, videos', '50 to 100,000+ available', 'You pick the delivery speed'],
-                        'link' => '/sgi/buy-instagram-likes'
-                    ],
-                    [
-                        'emoji' => '▶️',
-                        'title' => 'Buy Instagram Views',
-                        'subtitle' => 'Boost your video reach',
-                        'badge' => 'Fast Delivery',
-                        'badge_class' => '',
-                        'rating' => '4.9',
-                        'reviews' => '7,200+',
-                        'today' => '+412 today',
-                        'avatars' => [65, 59, 53],
-                        'features' => ['Real video views', 'Instant delivery', 'Boosts algorithm ranking', 'No password required'],
-                        'link' => '/sgi/buy-instagram-views'
-                    ],
-                    [
-                        'emoji' => '🎬',
-                        'title' => 'Instagram Reels',
-                        'subtitle' => 'Likes & Views for Reels',
-                        'badge' => 'Trending',
-                        'badge_class' => 'trending',
-                        'rating' => '4.9',
-                        'reviews' => '5,800+',
-                        'today' => '+389 today',
-                        'avatars' => [60, 49, 38],
-                        'features' => ['Real Reels engagement', 'Go viral faster', 'Reach Explore page', 'Safe & secure delivery'],
-                        'link' => '/sgi/buy-instagram-reels'
-                    ],
-                    [
-                        'emoji' => '🎵',
-                        'title' => 'Buy TikTok Followers',
-                        'subtitle' => 'Go viral on TikTok',
-                        'badge' => 'Creator Pick',
-                        'badge_class' => 'creator',
-                        'rating' => '4.9',
-                        'reviews' => '6,200+',
-                        'today' => '+531 today',
-                        'avatars' => [68, 65, 62],
-                        'features' => ['Quality TikTok followers', 'Helps you hit the For You page', '100 to 50,000+ followers', 'Natural-looking growth'],
-                        'link' => '/sgi/buy-tiktok-followers'
-                    ],
-                    [
-                        'emoji' => '👀',
-                        'title' => 'Buy TikTok Views',
-                        'subtitle' => 'Get your videos seen',
-                        'badge' => '',
-                        'badge_class' => '',
-                        'rating' => '4.9',
-                        'reviews' => '5,500+',
-                        'today' => '+298 today',
-                        'avatars' => [45, 19, 63],
-                        'features' => ['Real people watching', 'Helps with TikTok SEO', '1,000 to 1M+ views', 'Increases your watch time'],
-                        'link' => '/sgi/buy-tiktok-views'
-                    ],
-                ];
+                // Load homepage services from database
+                require_once __DIR__ . '/../includes/homepage_service_integration.php';
+                $services = getHomepageServices();
 
                 foreach ($services as $service) {
                 ?>
@@ -304,7 +227,7 @@
                         <?php } ?>
                     </ul>
                     <div class="service-footer">
-                        <span class="service-delivery">Avg. delivery: <strong>30 min</strong></span>
+                        <span class="service-delivery">Avg. delivery: <strong><?php echo htmlspecialchars($service['avg_delivery']); ?></strong></span>
                         <span class="service-status">In stock</span>
                     </div>
                     <a href="<?php echo $service['link']; ?>" class="btn btn-primary"><?php echo $service['title']; ?> →</a>
