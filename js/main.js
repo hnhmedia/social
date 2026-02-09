@@ -53,8 +53,17 @@ document.addEventListener('DOMContentLoaded', function() {
     // Smooth scroll for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
+            const href = this.getAttribute('href');
+            if (!href || href === '#') {
+                return;
+            }
             e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
+            let target = null;
+            try {
+                target = document.querySelector(href);
+            } catch (err) {
+                target = null;
+            }
             if (target) {
                 target.scrollIntoView({
                     behavior: 'smooth',

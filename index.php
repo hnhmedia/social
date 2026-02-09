@@ -32,7 +32,6 @@ if (isset($validPages[$page])) {
     $page_title = $validPages[$page];
 }
 
-include 'header.php';
 
 
 $pageTitle = 'Home';

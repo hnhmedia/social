@@ -148,7 +148,8 @@ function getAllServicesHierarchy() {
         $db->where('is_active', 1);
         $db->orderBy('display_order', 'ASC');
         $categories = $db->get('services');
-        print_r($categories);echo "@34";exit;       if ($categories) {
+        
+        if ($categories) {
             foreach ($categories as &$category) {
                 // Get services for each category
                 $category['services'] = getServicesByCategory($category['id']);

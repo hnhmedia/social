@@ -47,7 +47,8 @@
                     <a href="#" class="mega-menu-trigger" id="servicesMenuTrigger">
                         Services
                     </a>
-                    <?php echo generateMegaMenuHTML(); ?>
+                    <?php error_reporting(E_ALL);ini_set('display_errors', 1);
+                    echo generateMegaMenuHTML(); ?>
                 </li>
                 <!-- li><a href="/sgi/frequently-asked-questions">FAQ</a></li -->
                 <li><a href="/sgi/blog">Blog</a></li>
@@ -118,6 +119,8 @@
             const trigger = document.getElementById('servicesMenuTrigger');
             const dropdown = document.querySelector('.mega-menu-dropdown');
             const overlay = document.getElementById('megaMenuOverlay');
+            const container = trigger ? trigger.closest('.mega-menu-container') : null;
+            let hoverTimeout = null;
             
             if (trigger && dropdown) {
                 // Toggle menu on click
@@ -133,6 +136,24 @@
                         openMenu();
                     }
                 });
+
+                // Open on hover for desktop
+                if (container) {
+                    container.addEventListener('mouseenter', function() {
+                        if (hoverTimeout) {
+                            clearTimeout(hoverTimeout);
+                            hoverTimeout = null;
+                        }
+                        openMenu();
+                    });
+
+                    container.addEventListener('mouseleave', function() {
+                        if (hoverTimeout) {
+                            clearTimeout(hoverTimeout);
+                        }
+                        hoverTimeout = setTimeout(closeMenu, 120);
+                    });
+                }
                 
                 // Close menu when clicking overlay
                 if (overlay) {

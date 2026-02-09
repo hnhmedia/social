@@ -12,9 +12,11 @@ require_once __DIR__ . '/dynamic_service_integration.php';
  * 
  * @return array Menu structure
  */
-function getMegaMenuServices() {
-    try {
+function getMegaMenuServices() { 
+
         $hierarchy = getAllServicesHierarchy();
+
+       //  print_r($hierarchy);echo "@34";exit;
         
         // Format for menu display
         $menuData = [];
@@ -31,20 +33,7 @@ function getMegaMenuServices() {
         
         return $menuData;
         
-    } catch (Exception $e) {
-        error_log("Error getting mega menu: " . $e->getMessage());
-        
-        // Return default menu as fallback
-        return [
-            [
-                'category' => ['name' => 'Instagram', 'slug' => 'instagram', 'icon' => '📸'],
-                'services' => [
-                    ['name' => 'Buy Instagram Followers', 'slug' => 'buy-instagram-followers', 'icon' => '👥'],
-                    ['name' => 'Buy Instagram Likes', 'slug' => 'buy-instagram-likes', 'icon' => '❤️'],
-                ]
-            ]
-        ];
-    }
+
 }
 
 /**
@@ -52,7 +41,7 @@ function getMegaMenuServices() {
  * 
  * @return string HTML for mega menu
  */
-function generateMegaMenuHTML() {
+function generateMegaMenuHTML() { 
     $menuData = getMegaMenuServices();
     
     ob_start();
