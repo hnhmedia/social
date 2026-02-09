@@ -41,6 +41,7 @@
     <nav class="navbar">
         <div class="navbar-inner">
             <a href="/sgi/" class="logo">Famoid</a>
+            <div class="nav-right">
             <ul class="nav-links">
                 <!-- Dynamic Services Mega Menu -->
                 <li class="mega-menu-container">
@@ -57,7 +58,7 @@
                     <li><a href="/sgi/dashboard">Dashboard</a></li>
                 <?php endif; ?>
             </ul>
-            <div class="nav-right">
+            
                 <div class="lang-dropdown">
                     <div class="lang-select">🇺🇸 EN ▾</div>
                     <div class="lang-menu">
