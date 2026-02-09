@@ -1,6 +1,6 @@
 <?php
 /**
- * Dynamic Service Detail Page - Clean Version
+ * Dynamic Service Detail Page - CLEAN URL VERSION
  * Works with parent-child services table
  */
 
@@ -29,8 +29,8 @@ $serviceTags = getServiceTags($service['id']);
 $firstTag = !empty($serviceTags) ? $serviceTags[0] : null;
 $defaultPackages = $firstTag ? getServicePackages($service['id'], $firstTag['id']) : [];
 
-// Format packages for JavaScript
-$packagesJS = formatPackagesForJS($serviceTags);
+// Format packages for JavaScript - WITH CODES FOR CLEAN URLs
+$packagesJS = formatPackagesWithCodes($serviceTags);
 
 // Get FAQs
 $faqItems = getServiceFaqs($serviceSlug);
@@ -121,9 +121,11 @@ $trustBarFeatures = $firstTag && !empty($firstTag['features']) ? $firstTag['feat
                         <div class="package-select-grid" id="packageGrid">
                             <?php foreach($defaultPackages as $i => $pack): ?>
                             <div class="pkg-card <?php echo $i === 0 ? 'selected' : ''; ?>"
-                                 onclick="selectPackage(this, <?php echo $pack['quantity']; ?>, <?php echo $pack['price']; ?>)"
+                                 onclick="selectPackage(this, <?php echo $pack['quantity']; ?>, <?php echo $pack['price']; ?>, '<?php echo $pack['package_code']; ?>', <?php echo $pack['id']; ?>)"
                                  data-qty="<?php echo $pack['quantity']; ?>" 
-                                 data-price="<?php echo $pack['price']; ?>">
+                                 data-price="<?php echo $pack['price']; ?>"
+                                 data-code="<?php echo $pack['package_code']; ?>"
+                                 data-id="<?php echo $pack['id']; ?>">
                                 <div class="pkg-check">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                 </div>
@@ -293,12 +295,14 @@ $trustBarFeatures = $firstTag && !empty($firstTag['features']) ? $firstTag['feat
 
 </main>
 
-<!-- JAVASCRIPT -->
+<!-- JAVASCRIPT - CLEAN URL VERSION -->
 <script>
 const tabPackages = <?php echo json_encode($packagesJS); ?>;
 let currentTab = '<?php echo !empty($serviceTags) ? $serviceTags[0]['tag_slug'] : ''; ?>';
 let selectedQty = <?php echo !empty($defaultPackages) ? $defaultPackages[0]['quantity'] : 0; ?>;
 let selectedPrice = <?php echo !empty($defaultPackages) ? $defaultPackages[0]['price'] : 0; ?>;
+let selectedPackageCode = '<?php echo !empty($defaultPackages) ? $defaultPackages[0]['package_code'] : ''; ?>';
+let selectedPackageId = <?php echo !empty($defaultPackages) ? $defaultPackages[0]['id'] : 0; ?>;
 
 // Switch tab
 function switchTab(tab, btn) {
@@ -325,7 +329,9 @@ function switchTab(tab, btn) {
         card.className = 'pkg-card' + (i === 0 ? ' selected' : '');
         card.setAttribute('data-qty', pack.qty);
         card.setAttribute('data-price', pack.price);
-        card.onclick = function() { selectPackage(this, pack.qty, pack.price); };
+        card.setAttribute('data-code', pack.code);
+        card.setAttribute('data-id', pack.id);
+        card.onclick = function() { selectPackage(this, pack.qty, pack.price, pack.code, pack.id); };
         
         let saveHtml = '';
         if (pack.label && (pack.label.includes('Save') || pack.label.includes('/month') || pack.label === 'Premium' || pack.label.includes('Off'))) {
@@ -345,22 +351,31 @@ function switchTab(tab, btn) {
     if (packs.length > 0) {
         selectedQty = packs[0].qty;
         selectedPrice = packs[0].price;
+        selectedPackageCode = packs[0].code;
+        selectedPackageId = packs[0].id;
         document.getElementById('displayPrice').textContent = '$' + packs[0].price.toFixed(2);
     }
 }
 
-// Select package
-function selectPackage(el, qty, price) {
+// Select package - CLEAN URL VERSION
+function selectPackage(el, qty, price, code, id) {
     document.querySelectorAll('.pkg-card').forEach(c => c.classList.remove('selected'));
     el.classList.add('selected');
     selectedQty = qty;
     selectedPrice = price;
+    selectedPackageCode = code;
+    selectedPackageId = id;
     document.getElementById('displayPrice').textContent = '$' + price.toFixed(2);
 }
 
-// Buy Now
+// Buy Now - CLEAN URL VERSION
 function handleBuyNow() {
-    window.location.href = 'checkout.php?service=<?php echo $serviceSlug; ?>&qty=' + selectedQty + '&price=' + selectedPrice + '&tab=' + currentTab;
+    if (!selectedPackageCode) {
+        alert('Please select a package');
+        return;
+    }
+    // Redirect to clean URL: /order/2IGF/
+    window.location.href = '/sgi/order/' + selectedPackageCode + '/';
 }
 
 // FAQ toggle

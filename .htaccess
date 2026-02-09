@@ -6,8 +6,23 @@ RewriteBase /sgi/
 # RewriteCond %{HTTPS} off
 # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-# Clean Order URLs: /order/100IGF/ -> order.php?id=100IGF
-RewriteRule ^order/([0-9]+[A-Z]+)/?$ order.php?id=$1 [L,QSA]
+# Clean Auth URLs
+RewriteRule ^login/?$ modules/login.php [L,QSA]
+RewriteRule ^register/?$ modules/register.php [L,QSA]
+RewriteRule ^logout/?$ logout.php [L,QSA]
+RewriteRule ^forgot-password/?$ modules/forgot-password.php [L,QSA]
+RewriteRule ^reset-password/([a-zA-Z0-9]+)/?$ modules/reset-password.php?token=$1 [L,QSA]
+
+# Dashboard URLs
+RewriteRule ^dashboard/?$ modules/dashboard.php [L,QSA]
+RewriteRule ^dashboard/profile/?$ modules/dashboard.php?section=profile [L,QSA]
+RewriteRule ^dashboard/orders/?$ modules/dashboard.php?section=orders [L,QSA]
+
+# Clean Order Success URLs: /order/success/1/ORD-20260209-AE5/ -> order-success.php?oid=1&order_number=ORD-20260209-AE5
+RewriteRule ^order/success/([0-9]+)/([A-Z0-9\-]+)/?$ order-success.php?oid=$1&order_number=$2 [L,QSA]
+
+# Clean Order URLs: /order/2IGF/ -> order.php?code=2IGF
+RewriteRule ^order/([0-9]+[A-Z]+)/?$ order.php?code=$1 [L,QSA]
 
 # Service detail pages: /buy-instagram-followers
 RewriteCond %{REQUEST_FILENAME} !-f

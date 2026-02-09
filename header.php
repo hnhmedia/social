@@ -3,13 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo isset($page_title) ? $page_title : 'Famoid: Buy Instagram Followers, Likes & Views | #1 Agency'; ?></title>
+    <?php 
+    // Include Config for dynamic site name
+    require_once __DIR__ . '/includes/Config.php';
+    $siteName = Config::siteName();
+    $baseUrl = Config::baseUrl();
+    ?>
+    <title><?php echo isset($page_title) ? $page_title : $siteName . ': Buy Instagram Followers, Likes & Views | #1 Agency'; ?></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/sgi/css/style.css">
-    <link rel="stylesheet" href="/sgi/css/service-pages.css">
-    <link rel="stylesheet" href="/sgi/css/mega-menu.css">
+    <link rel="stylesheet" href="<?php echo $baseUrl; ?>/css/style.css">
+    <link rel="stylesheet" href="<?php echo $baseUrl; ?>/css/service-pages.css">
+    <link rel="stylesheet" href="<?php echo $baseUrl; ?>/css/mega-menu.css">
 </head>
 <body>
     <?php // error_reporting(E_ALL);ini_set('display_errors', 1);
@@ -40,7 +46,7 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="navbar-inner">
-            <a href="/sgi/" class="logo">Famoid</a>
+            <a href="<?php echo $baseUrl; ?>/" class="logo"><?php echo $siteName; ?></a>
             <div class="nav-right">
             <ul class="nav-links">
                 <!-- Dynamic Services Mega Menu -->
@@ -51,11 +57,11 @@
                     <?php error_reporting(E_ALL);ini_set('display_errors', 1);
                     echo generateMegaMenuHTML(); ?>
                 </li>
-                <!-- li><a href="/sgi/frequently-asked-questions">FAQ</a></li -->
-                <li><a href="/sgi/blog">Blog</a></li>
-                <li><a href="/sgi/contact">Contact</a></li>
+                <!-- li><a href="<?php echo $baseUrl; ?>/frequently-asked-questions">FAQ</a></li -->
+                <li><a href="<?php echo $baseUrl; ?>/blog">Blog</a></li>
+                <li><a href="<?php echo $baseUrl; ?>/contact">Contact</a></li>
                 <?php if ($loggedInUser): ?>
-                    <li><a href="/sgi/dashboard">Dashboard</a></li>
+                    <li><a href="<?php echo $baseUrl; ?>/dashboard">Dashboard</a></li>
                 <?php endif; ?>
             </ul>
             
@@ -75,15 +81,14 @@
                     <!-- Logged in user menu -->
                     <div class="account-dropdown">
                         <button class="btn btn-outline account-btn">
-                            <?php echo htmlspecialchars($loggedInUser['name']); ?> ▾
+                            Welcome ▾
                         </button>
                         <div class="account-menu">
-                            <a href="/sgi/dashboard">📊 Dashboard</a>
-                            <a href="/sgi/orders">📦 My Orders</a>
-                            <a href="/sgi/profile">👤 Profile</a>
-                            <a href="/sgi/settings">⚙️ Settings</a>
+                            <a href="<?php echo $baseUrl; ?>/dashboard">📊 Dashboard</a>
+                            <a href="<?php echo $baseUrl; ?>/dashboard?section=orders">📦 My Orders</a>
+                            <a href="<?php echo $baseUrl; ?>/dashboard?section=profile">👤 Profile</a>
                             <div class="menu-divider"></div>
-                            <a href="/sgi/logout">🚪 Logout</a>
+                            <a href="<?php echo $baseUrl; ?>/logout">🚪 Logout</a>
                         </div>
                     </div>
                 <?php else: ?>
@@ -91,12 +96,10 @@
                     <div class="account-dropdown">
                         <button class="btn btn-outline account-btn">My Account ▾</button>
                         <div class="account-menu">
-                            <a href="/sgi/login">🔐 Login</a>
-                            <a href="/sgi/register">📝 Register</a>
-                            <a href="/sgi/track-order">📦 Track Order</a>
+                            <a href="<?php echo $baseUrl; ?>/login">🔐 Login</a>
+                            <a href="<?php echo $baseUrl; ?>/register">📝 Register</a>
                             <div class="menu-divider"></div>
-                            <a href="/sgi/help">❓ Help Center</a>
-                            <a href="/sgi/contact">💬 Contact Support</a>
+                            <a href="<?php echo $baseUrl; ?>/contact">💬 Contact Support</a>
                         </div>
                     </div>
                 <?php endif; ?>
@@ -115,6 +118,10 @@
     <?php endif; ?>
     
     <script>
+        // Pass site name to JavaScript
+        const SITE_NAME = '<?php echo addslashes($siteName); ?>';
+        const BASE_URL = '<?php echo addslashes($baseUrl); ?>';
+        
         // Mega Menu JavaScript
         document.addEventListener('DOMContentLoaded', function() {
             const trigger = document.getElementById('servicesMenuTrigger');
@@ -218,7 +225,7 @@
         // Example: Show welcome message for new users
         <?php if (isset($_SESSION['just_registered'])): ?>
         setTimeout(() => {
-            alert('Welcome to Famoid, <?php echo htmlspecialchars($loggedInUser['name']); ?>! Your account has been created successfully.');
+            alert('Welcome to ' + SITE_NAME + ', <?php echo htmlspecialchars($loggedInUser['name']); ?>! Your account has been created successfully.');
         }, 1000);
         <?php unset($_SESSION['just_registered']); ?>
         <?php endif; ?>

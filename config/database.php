@@ -2,19 +2,52 @@
 /**
  * Database Configuration File
  * 
- * This file contains all database connection settings
- * Make sure to update these values with your actual database credentials
+ * This file contains all database connection settings, SMTP email configuration, and site URLs
+ * Make sure to update these values with your actual credentials
  */
+
+// Site Configuration
+$site_config = [
+    'base_url'    => 'https://betabd.zodiaccdn.com/sgi',    // Site base URL (no trailing slash)
+    'site_name'   => 'SocialIG',                             // Site name - CHANGE THIS to update entire site
+    'site_title'  => 'SocialIG - Social Media Growth Services',
+    'admin_email' => 'admin@socialig.com',                   // Admin email
+    'support_email' => 'support@socialig.com',               // Support email
+];
 
 // Database Configuration
 $db_config = [
     'host'     => '10.10.20.3',        // Database server host
-    'username' => 'root',    // Database username
-    'password' => 'OCOJv7FgoBMpaznG',    // Database password
-    'db'       => 'social',      // Database name
-    'port'     => 3306,               // Database port (default MySQL port)
-    'prefix'   => 'si_',              // Table prefix (optional)
-    'charset'  => 'utf8mb4'           // Character set
+    'username' => 'root',              // Database username
+    'password' => 'OCOJv7FgoBMpaznG',  // Database password
+    'db'       => 'social',            // Database name
+    'port'     => 3306,                // Database port (default MySQL port)
+    'prefix'   => 'si_',               // Table prefix (optional)
+    'charset'  => 'utf8mb4'            // Character set
+];
+
+// SMTP Email Configuration
+$smtp_config = [
+    'enabled'   => true,                           // Enable/disable SMTP
+    'host'      => 'smtp.gmail.com',              // SMTP server (e.g., smtp.gmail.com, smtp.mailtrap.io)
+    'port'      => 587,                            // SMTP port (587 for TLS, 465 for SSL, 25 for standard)
+    'username'  => 'your-email@gmail.com',        // SMTP username (your email)
+    'password'  => 'your-app-password',           // SMTP password (use App Password for Gmail)
+    'from_email' => 'noreply@socialig.com',       // From email address
+    'from_name'  => $site_config['site_name'],    // From name (uses site name)
+    'encryption' => 'tls',                         // Encryption type: 'tls', 'ssl', or '' for none
+    'timeout'    => 30,                            // Connection timeout in seconds
+    'debug'      => false,                         // Enable SMTP debug output (2 = detailed, 1 = messages, 0 = off)
+    
+    // Email Templates
+    'templates' => [
+        'logo_url'       => $site_config['base_url'] . '/images/logo.png',
+        'company_name'   => $site_config['site_name'],
+        'company_url'    => $site_config['base_url'] . '/',
+        'support_email'  => $site_config['support_email'],
+        'primary_color'  => '#667eea',
+        'secondary_color' => '#764ba2'
+    ]
 ];
 
 // Alternative configuration for production/staging environments
@@ -76,8 +109,9 @@ $security_config = [
 ];
 
 return [
+    'site'     => $site_config,
     'database' => $db_config,
+    'smtp'     => $smtp_config,
     'settings' => $db_settings,
     'security' => $security_config
 ];
-?>

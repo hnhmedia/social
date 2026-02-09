@@ -342,18 +342,23 @@ function getPackageByCode($code) {
     try {
         $db = Database::getConnection();
         
-        $db->where('package_code', $code);
-        $db->join('services s', 'service_packages.service_id = s.id', 'LEFT');
-        $db->join('service_tags st', 'service_packages.tag_id = st.id', 'LEFT');
+        // ✅ Use table alias 'sp' instead of full table name
+        $db->where('sp.package_code', $code);
+        $db->join('services s', 'sp.service_id = s.id', 'LEFT');
+        $db->join('service_tags st', 'sp.tag_id = st.id', 'LEFT');
         
-        $package = $db->getOne('service_packages', 
-            'service_packages.*, s.name as service_name, s.icon as service_icon, s.slug as service_slug, s.service_code, st.tag_name, st.tag_slug'
+        // ✅ Explicitly select all columns with aliases
+        $package = $db->getOne('service_packages sp',  // Note: 'sp' alias
+            'sp.id, sp.service_id, sp.tag_id, sp.package_code, sp.quantity, sp.price, sp.original_price, sp.discount_label, ' .
+            's.name as service_name, s.icon as service_icon, s.slug as service_slug, s.service_code, ' .
+            'st.tag_name, st.tag_slug'
         );
         
         return $package;
         
     } catch (Exception $e) {
         error_log("Error getting package by code: " . $e->getMessage());
+        error_log("Last query: " . $db->getLastQuery());  // ✅ Added debugging
         return null;
     }
 }
