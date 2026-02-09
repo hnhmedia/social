@@ -26,6 +26,7 @@
     require_once __DIR__ . '/includes/service_integration.php';
     require_once __DIR__ . '/includes/faq_integration.php';
     require_once __DIR__ . '/includes/mega_menu_integration.php';
+    require_once __DIR__ . '/includes/homepage_service_integration.php';
     require_once __DIR__ . '/models/User.php';
     
     

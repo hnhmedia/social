@@ -197,7 +197,7 @@
             <div class="services-grid">
                 <?php
                 // Load homepage services from database
-                require_once __DIR__ . '/../includes/homepage_service_integration.php';
+              
                 $services = getHomepageServices();
 
                 foreach ($services as $service) {

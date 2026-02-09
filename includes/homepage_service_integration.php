@@ -19,7 +19,7 @@ function getHomepageServices() {
     $db->where('is_active', 1);
     $db->orderBy('homepage_order', 'ASC');
     
-    $services = $db->get('si_services');
+    $services = $db->get('services');
     
     if (!$services) {
         return [];
@@ -74,7 +74,7 @@ function getTodayOrderCount($serviceId) {
     $db = Database::getConnection();
     
     // Get service name to match with orders
-    $service = $db->where('id', $serviceId)->getOne('si_services', 'name');
+    $service = $db->where('id', $serviceId)->getOne('services', 'name');
     
     if (!$service) {
         return 0;
@@ -84,7 +84,7 @@ function getTodayOrderCount($serviceId) {
     $db->where('service_name', $service['name']);
     $db->where('DATE(created_at)', date('Y-m-d'));
     
-    $count = $db->getValue('si_orders', 'COUNT(*)');
+    $count = $db->getValue('orders', 'COUNT(*)');
     
     return (int)$count ?: 0;
 }
@@ -101,7 +101,7 @@ function getPackageQuantityRange($serviceId) {
     $db->where('service_id', $serviceId);
     $db->where('is_active', 1);
     
-    $result = $db->getOne('si_service_packages', 'MIN(quantity) as min_qty, MAX(quantity) as max_qty');
+    $result = $db->getOne('service_packages', 'MIN(quantity) as min_qty, MAX(quantity) as max_qty');
     
     if (!$result) {
         return ['min' => 0, 'max' => 0];
@@ -136,7 +136,7 @@ function getTotalOrdersToday() {
     $db = Database::getConnection();
     
     $db->where('DATE(created_at)', date('Y-m-d'));
-    $count = $db->getValue('si_orders', 'COUNT(*)');
+    $count = $db->getValue('orders', 'COUNT(*)');
     
     return (int)$count ?: 0;
 }
@@ -153,7 +153,7 @@ function getTotalOrdersThisWeek() {
     $startOfWeek = date('Y-m-d', strtotime('monday this week'));
     
     $db->where('DATE(created_at) >= ?', [$startOfWeek]);
-    $count = $db->getValue('si_orders', 'COUNT(*)');
+    $count = $db->getValue('orders', 'COUNT(*)');
     
     return (int)$count ?: 0;
 }
