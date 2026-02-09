@@ -16,6 +16,42 @@
     <link rel="stylesheet" href="<?php echo $baseUrl; ?>/css/style.css">
     <link rel="stylesheet" href="<?php echo $baseUrl; ?>/css/service-pages.css">
     <link rel="stylesheet" href="<?php echo $baseUrl; ?>/css/mega-menu.css">
+    
+    <!-- Google Translate -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,de,fr,es,ar,pt,it,nl,tr,pl,ru,ja,ko,zh-CN,hi',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    
+    <style>
+        /* Hide Google Translate banner */
+        .goog-te-banner-frame.skiptranslate {
+            display: none !important;
+        }
+        body {
+            top: 0 !important;
+        }
+        #google_translate_element {
+            position: absolute;
+            left: -9999px;
+            visibility: hidden;
+        }
+        .skiptranslate iframe {
+            visibility: hidden !important;
+        }
+        
+        /* Language dropdown active state */
+        .lang-dropdown.active .lang-menu {
+            display: block;
+        }
+    </style>
 </head>
 <body>
     <?php // error_reporting(E_ALL);ini_set('display_errors', 1);
@@ -69,12 +105,16 @@
                 <div class="lang-dropdown">
                     <div class="lang-select">🇺🇸 EN ▾</div>
                     <div class="lang-menu">
-                        <a href="?lang=en" class="active">🇺🇸 English</a>
-                        <a href="?lang=de">🇩🇪 Deutsch</a>
-                        <a href="?lang=fr">🇫🇷 Français</a>
-                        <a href="?lang=es">🇪🇸 Español</a>
-                        <a href="?lang=ar">🇦🇪 Arabic</a>
-                        <a href="?lang=pt">🇧🇷 Português (BR)</a>
+                        <a href="#" data-lang="en" class="active">🇺🇸 English</a>
+                        <a href="#" data-lang="de">🇩🇪 Deutsch</a>
+                        <a href="#" data-lang="fr">🇫🇷 Français</a>
+                        <a href="#" data-lang="es">🇪🇸 Español</a>
+                        <a href="#" data-lang="ar">🇦🇪 Arabic</a>
+                        <a href="#" data-lang="pt">🇧🇷 Português (BR)</a>
+                        <a href="#" data-lang="it">🇮🇹 Italiano</a>
+                        <a href="#" data-lang="nl">🇳🇱 Nederlands</a>
+                        <a href="#" data-lang="tr">🇹🇷 Türkçe</a>
+                        <a href="#" data-lang="ru">🇷🇺 Русский</a>
                     </div>
                 </div>
                 
@@ -107,6 +147,9 @@
             </div>
         </div>
     </nav>
+    
+    <!-- Hidden Google Translate Element -->
+    <div id="google_translate_element" style="display:none;"></div>
     
     <!-- Mega Menu Overlay -->
     <div class="mega-menu-overlay" id="megaMenuOverlay"></div>
@@ -264,4 +307,146 @@
             window.location.href = 'login.php?redirect=order';
             <?php endif; ?>
         }
+        
+        // ===== GOOGLE TRANSLATE LANGUAGE SWITCHING =====
+        
+        // Language configuration
+        const languages = {
+            'en': { name: 'English', flag: '🇺🇸', code: 'en' },
+            'de': { name: 'Deutsch', flag: '🇩🇪', code: 'de' },
+            'fr': { name: 'Français', flag: '🇫🇷', code: 'fr' },
+            'es': { name: 'Español', flag: '🇪🇸', code: 'es' },
+            'ar': { name: 'Arabic', flag: '🇦🇪', code: 'ar' },
+            'pt': { name: 'Português (BR)', flag: '🇧🇷', code: 'pt' },
+            'it': { name: 'Italiano', flag: '🇮🇹', code: 'it' },
+            'nl': { name: 'Nederlands', flag: '🇳🇱', code: 'nl' },
+            'tr': { name: 'Türkçe', flag: '🇹🇷', code: 'tr' },
+            'ru': { name: 'Русский', flag: '🇷🇺', code: 'ru' }
+        };
+
+        // Change language function
+        function changeLanguage(langCode) {
+            // Save preference
+            localStorage.setItem('selectedLanguage', langCode);
+            
+            // Update display
+            updateLanguageDisplay(langCode);
+            
+            // Trigger Google Translate
+            const selectElement = document.querySelector('.goog-te-combo');
+            if (selectElement) {
+                selectElement.value = langCode;
+                selectElement.dispatchEvent(new Event('change'));
+            }
+            
+            // Close dropdown
+            const dropdown = document.querySelector('.lang-dropdown');
+            if (dropdown) {
+                dropdown.classList.remove('active');
+            }
+        }
+
+        // Update language display in header
+        function updateLanguageDisplay(langCode) {
+            const lang = languages[langCode] || languages['en'];
+            const langSelect = document.querySelector('.lang-select');
+            
+            if (langSelect) {
+                langSelect.innerHTML = lang.flag + ' ' + langCode.toUpperCase() + ' ▾';
+            }
+            
+            // Update active state in dropdown
+            document.querySelectorAll('.lang-menu a').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-lang') === langCode) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        // Initialize language system when page loads
+        window.addEventListener('load', function() {
+            // Get saved language or default to English
+            const savedLang = localStorage.getItem('selectedLanguage') || 'en';
+            
+            // Update display immediately
+            updateLanguageDisplay(savedLang);
+            
+            // Wait for Google Translate to load, then set language
+            let attempts = 0;
+            const maxAttempts = 30;
+            
+            const checkAndSetLanguage = setInterval(function() {
+                attempts++;
+                const selectElement = document.querySelector('.goog-te-combo');
+                
+                if (selectElement) {
+                    clearInterval(checkAndSetLanguage);
+                    
+                    if (savedLang !== 'en') {
+                        setTimeout(() => {
+                            selectElement.value = savedLang;
+                            selectElement.dispatchEvent(new Event('change'));
+                        }, 500);
+                    }
+                } else if (attempts >= maxAttempts) {
+                    clearInterval(checkAndSetLanguage);
+                }
+            }, 100);
+            
+            // Setup language dropdown click handlers
+            document.querySelectorAll('.lang-menu a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const langCode = this.getAttribute('data-lang');
+                    changeLanguage(langCode);
+                });
+            });
+            
+            // Toggle language dropdown
+            const langSelect = document.querySelector('.lang-select');
+            const langDropdown = document.querySelector('.lang-dropdown');
+            
+            if (langSelect && langDropdown) {
+                langSelect.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    langDropdown.classList.toggle('active');
+                    
+                    // Close account dropdown if open
+                    document.querySelectorAll('.account-dropdown').forEach(dropdown => {
+                        dropdown.classList.remove('active');
+                    });
+                });
+                
+                // Close dropdown when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!langDropdown.contains(e.target)) {
+                        langDropdown.classList.remove('active');
+                    }
+                });
+            }
+            
+            // Account dropdown toggle functionality
+            document.querySelectorAll('.account-dropdown .account-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const dropdown = this.closest('.account-dropdown');
+                    dropdown.classList.toggle('active');
+                    
+                    // Close language dropdown if open
+                    if (langDropdown) {
+                        langDropdown.classList.remove('active');
+                    }
+                });
+            });
+            
+            // Close account dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.account-dropdown')) {
+                    document.querySelectorAll('.account-dropdown').forEach(dropdown => {
+                        dropdown.classList.remove('active');
+                    });
+                }
+            });
+        });
     </script>
