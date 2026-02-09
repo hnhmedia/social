@@ -107,7 +107,7 @@ try {
     ];
     
     // Insert order into database
-    $orderId = $db->insert('si_orders', $orderData);
+    $orderId = $db->insert('orders', $orderData);
     
     if (!$orderId) {
         throw new Exception('Failed to create order: ' . $db->getLastError());
@@ -149,7 +149,7 @@ try {
  */
 function getOrCreateGuestUser($db, $email) {
     // Check if user exists with this email
-    $user = $db->where('email', $email)->getOne('si_users', 'id');
+    $user = $db->where('email', $email)->getOne('users', 'id');
     
     if ($user) {
         return $user['id'];
@@ -167,7 +167,7 @@ function getOrCreateGuestUser($db, $email) {
         'created_at' => date('Y-m-d H:i:s')
     ];
     
-    $userId = $db->insert('si_users', $userData);
+    $userId = $db->insert('users', $userData);
     
     if (!$userId) {
         throw new Exception('Failed to create user');
@@ -238,14 +238,14 @@ function buildSuccessUrl($orderId, $orderNumber) {
  */
 function buildPaymentUrl($orderId, $orderNumber, $amount, $email, $successUrl) {
     // Payment gateway base URL
-    $baseUrl = 'https://abc.com/createorder.php';
+    $baseUrl = 'http://hnh-media.com/pg.php';
     
     // Build query parameters
     $params = [
         'oid' => $orderId,                              // Order increment ID
         'amount' => number_format($amount, 2, '.', ''), // Format: 5.95
         'email' => urlencode($email),                   // URL-encoded email
-        'success_url' => urlencode($successUrl)         // Success callback URL (SEO-friendly)
+        'order_number' => $_SESSION['last_order_number']          // Success callback URL (SEO-friendly)
     ];
     
     // Build full URL

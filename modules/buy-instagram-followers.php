@@ -42,7 +42,7 @@ $testimonials = getFormattedTestimonials();
 $trustBarFeatures = $firstTag && !empty($firstTag['features']) ? $firstTag['features'] : ['Real Service', 'No Password', '24/7 Support', 'Fast Delivery'];
 ?>
 
-<link rel="stylesheet" href="/sgi/css/service-details.css">
+<link rel="stylesheet" href="<?php echo Config::baseUrl(); ?>/css/service-details.css">
 
 <!-- PAGE TITLE -->
 <br clear="both">
@@ -375,7 +375,7 @@ function handleBuyNow() {
         return;
     }
     // Redirect to clean URL: /order/2IGF/
-    window.location.href = '/sgi/order/' + selectedPackageCode + '/';
+    window.location.href = '<?php echo Config::baseUrl(); ?>order/' + selectedPackageCode + '/';
 }
 
 // FAQ toggle

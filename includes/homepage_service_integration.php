@@ -54,7 +54,7 @@ function getHomepageServices() {
             'today_count' => $todayCount,
             'avatars' => generateRandomAvatars(3), // Random avatar IDs for display
             'features' => $features,
-            'link' => '/sgi/' . $service['slug'],
+            'link' => Config::baseUrl() . $service['slug'],
             'avg_delivery' => $service['avg_delivery'] ?: '30 min',
             'min_quantity' => $packageRange['min'],
             'max_quantity' => $packageRange['max']

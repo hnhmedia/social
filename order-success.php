@@ -11,6 +11,7 @@
 session_start();
 
 require_once __DIR__ . '/includes/Database.php';
+require_once __DIR__ . '/includes/Config.php';
 
 // Get BOTH order ID and order number from URL
 $orderId = isset($_GET['oid']) ? (int)$_GET['oid'] : 0;
@@ -18,7 +19,7 @@ $orderNumber = isset($_GET['order_number']) ? trim($_GET['order_number']) : '';
 
 // SECURITY: Require both parameters
 if ($orderId <= 0 || empty($orderNumber)) {
-    header("Location: /sgi/");
+    header("Location: " . Config::baseUrl() );
     exit;
 }
 
@@ -36,13 +37,13 @@ try {
     // If order not found or mismatch, redirect
     if (!$order) {
         // Invalid oid/order_number combination
-        header("Location: /sgi/");
+        header("Location: " . Config::baseUrl() );
         exit;
     }
     
 } catch (Exception $e) {
    // print_r("Error loading order: " . $e->getMessage());
-    header("Location: /sgi/");
+    header("Location: " . Config::baseUrl() );
     exit;
 }
 ?>
@@ -315,8 +316,7 @@ try {
                 You can track your order status anytime using your order number.</p>
             </div>
             
-            <a href="/sgi/" class="btn-primary">Continue Shopping</a>
-            <a href="/sgi/track-order?order=<?php echo urlencode($order['order_number']); ?>" class="btn-secondary">Track Order</a>
+            <a href="<?php echo Config::baseUrl(); ?>" class="btn-primary">Continue Shopping</a>
         </div>
     </div>
 </body>

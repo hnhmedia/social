@@ -42,11 +42,11 @@
 
             <!-- Service Links -->
             <div class="service-links">
-                <a href="/sgi/buy-instagram-followers" class="service-link">BUY INSTAGRAM FOLLOWERS</a>
-                <a href="/sgi/buy-instagram-likes" class="service-link">BUY INSTAGRAM LIKES</a>
-                <a href="/sgi/buy-instagram-views" class="service-link">BUY INSTAGRAM VIEWS</a>
-                <a href="/sgi/buy-tiktok-followers" class="service-link">BUY TIKTOK FOLLOWERS</a>
-                <a href="/sgi/buy-tiktok-likes" class="service-link">BUY TIKTOK LIKES</a>
+                <a href="<?php echo $baseUrl; ?>/buy-instagram-followers" class="service-link">BUY INSTAGRAM FOLLOWERS</a>
+                <a href="<?php echo $baseUrl; ?>/buy-instagram-likes" class="service-link">BUY INSTAGRAM LIKES</a>
+                <a href="<?php echo $baseUrl; ?>/buy-instagram-views" class="service-link">BUY INSTAGRAM VIEWS</a>
+                <a href="<?php echo $baseUrl; ?>/buy-tiktok-followers" class="service-link">BUY TIKTOK FOLLOWERS</a>
+                <a href="<?php echo $baseUrl; ?>/buy-tiktok-likes" class="service-link">BUY TIKTOK LIKES</a>
             </div>
 
             <!-- Live Notification -->
@@ -389,7 +389,7 @@
 
                 <div class="cta-buttons">
                     <a href="#services" class="btn btn-primary btn-lg">🚀 Start Growing Now</a>
-                    <a href="/sgi/contact" class="btn btn-outline btn-lg">💬 Talk to Us</a>
+                    <a href="<?php echo $baseUrl; ?>/contact" class="btn btn-outline btn-lg">💬 Talk to Us</a>
                 </div>
                 <div class="cta-badges">
                     <span>🔒 SSL Secured</span>

@@ -5,13 +5,14 @@
  */
 
 require_once __DIR__ . '/includes/Database.php';
+require_once __DIR__ . '/includes/Config.php';
 require_once __DIR__ . '/includes/dynamic_service_integration.php';
 
 // Get package code from URL
 $packageCode = isset($_GET['code']) ? trim($_GET['code']) : '';
 
 if (empty($packageCode)) {
-    header("Location: /sgi/");
+    header("Location: " . Config::baseUrl() );
     exit;
 }
 
@@ -19,7 +20,7 @@ if (empty($packageCode)) {
 $package = getPackageByCode($packageCode);
 
 if (!$package) {
-    header("Location: /sgi/");
+    header("Location: " . Config::baseUrl());
     exit;
 }
 
@@ -373,12 +374,12 @@ if ($package['original_price'] && $package['original_price'] > $package['price']
     <header class="site-header">
         <div class="header-container">
             <div class="header-left">
-                <a href="/sgi/<?php echo $package['service_slug']; ?>" class="back-btn">
+                <a href="<?php echo Config::baseUrl().$package['service_slug']; ?>" class="back-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M19 12H5M12 19l-7-7 7-7"/>
                     </svg>
                 </a>
-                <a href="/sgi/" class="logo">
+                <a href="<?php echo Config::baseUrl(); ?>/" class="logo">
                     <div class="logo-icon">F</div>
                     <span>FAMOID</span>
                 </a>
@@ -440,7 +441,7 @@ if ($package['original_price'] && $package['original_price'] > $package['price']
                 <?php endif; ?>
             </div>
             
-            <form id="orderForm" method="POST" action="/sgi/process-order.php">
+            <form id="orderForm" method="POST" action="<?php echo Config::baseUrl(); ?>process-order.php">
                 <input type="hidden" name="package_code" value="<?php echo htmlspecialchars($packageCode); ?>">
                 <input type="hidden" name="package_id" value="<?php echo $package['id']; ?>">
                 <input type="hidden" name="service_id" value="<?php echo $package['service_id']; ?>">

@@ -24,12 +24,14 @@
                 pageLanguage: 'en',
                 includedLanguages: 'en,de,fr,es,ar,pt,it,nl,tr,pl,ru,ja,ko,zh-CN,hi',
                 layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-                autoDisplay: false
             }, 'google_translate_element');
         }
     </script>
-    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     
+
+<script type="text/javascript"
+  src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+</script>
     <style>
         /* Hide Google Translate banner */
         .goog-te-banner-frame.skiptranslate {
@@ -147,9 +149,18 @@
             </div>
         </div>
     </nav>
+
+    <div id="google_translate_element"></div>
+<script> 
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'en'
+  }, 'google_translate_element');
+}
+</script>
+<script src="http://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script> 
     
     <!-- Hidden Google Translate Element -->
-    <div id="google_translate_element" style="display:none;"></div>
     
     <!-- Mega Menu Overlay -->
     <div class="mega-menu-overlay" id="megaMenuOverlay"></div>
@@ -325,6 +336,23 @@
         };
 
         // Change language function
+        function waitForTranslateAndSet(langCode) {
+            let attempts = 0;
+            const maxAttempts = 30;
+
+            const check = setInterval(function() {
+                attempts++;
+                const selectElement = document.querySelector('.goog-te-combo');
+                if (selectElement) {
+                    clearInterval(check);
+                    selectElement.value = langCode;
+                    selectElement.dispatchEvent(new Event('change'));
+                } else if (attempts >= maxAttempts) {
+                    clearInterval(check);
+                }
+            }, 100);
+        }
+
         function changeLanguage(langCode) {
             // Save preference
             localStorage.setItem('selectedLanguage', langCode);
@@ -337,6 +365,8 @@
             if (selectElement) {
                 selectElement.value = langCode;
                 selectElement.dispatchEvent(new Event('change'));
+            } else {
+                waitForTranslateAndSet(langCode);
             }
             
             // Close dropdown
@@ -373,26 +403,9 @@
             updateLanguageDisplay(savedLang);
             
             // Wait for Google Translate to load, then set language
-            let attempts = 0;
-            const maxAttempts = 30;
-            
-            const checkAndSetLanguage = setInterval(function() {
-                attempts++;
-                const selectElement = document.querySelector('.goog-te-combo');
-                
-                if (selectElement) {
-                    clearInterval(checkAndSetLanguage);
-                    
-                    if (savedLang !== 'en') {
-                        setTimeout(() => {
-                            selectElement.value = savedLang;
-                            selectElement.dispatchEvent(new Event('change'));
-                        }, 500);
-                    }
-                } else if (attempts >= maxAttempts) {
-                    clearInterval(checkAndSetLanguage);
-                }
-            }, 100);
+            if (savedLang !== 'en') {
+                waitForTranslateAndSet(savedLang);
+            }
             
             // Setup language dropdown click handlers
             document.querySelectorAll('.lang-menu a').forEach(link => {

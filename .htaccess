@@ -21,6 +21,8 @@ RewriteRule ^dashboard/orders/?$ modules/dashboard.php?section=orders [L,QSA]
 # Clean Order Success URLs: /order/success/1/ORD-20260209-AE5/ -> order-success.php?oid=1&order_number=ORD-20260209-AE5
 RewriteRule ^order/success/([0-9]+)/([A-Z0-9\-]+)/?$ order-success.php?oid=$1&order_number=$2 [L,QSA]
 
+
+RewriteRule ^order-failed/?$ order-failed.php [L,QSA]
 # Clean Order URLs: /order/2IGF/ -> order.php?code=2IGF
 RewriteRule ^order/([0-9]+[A-Z]+)/?$ order.php?code=$1 [L,QSA]
 
