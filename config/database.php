@@ -9,7 +9,7 @@
 // Site Configuration
 $site_config = [
     'base_url'    => 'https://betabd.zodiaccdn.com/sgi',    // Site base URL (no trailing slash)
-    'site_name'   => 'SocialIG',                             // Site name - CHANGE THIS to update entire site
+    'site_name'   => 'SocialIG',                             // Site name
     'site_title'  => 'SocialIG - Social Media Growth Services',
     'admin_email' => 'admin@socialig.com',                   // Admin email
     'support_email' => 'support@socialig.com',               // Support email
@@ -34,17 +34,17 @@ $smtp_config = [
     'username'  => 'your-email@gmail.com',        // SMTP username (your email)
     'password'  => 'your-app-password',           // SMTP password (use App Password for Gmail)
     'from_email' => 'noreply@socialig.com',       // From email address
-    'from_name'  => $site_config['site_name'],    // From name (uses site name)
+    'from_name'  => 'SocialIG',                   // From name
     'encryption' => 'tls',                         // Encryption type: 'tls', 'ssl', or '' for none
     'timeout'    => 30,                            // Connection timeout in seconds
     'debug'      => false,                         // Enable SMTP debug output (2 = detailed, 1 = messages, 0 = off)
     
     // Email Templates
     'templates' => [
-        'logo_url'       => $site_config['base_url'] . '/images/logo.png',
-        'company_name'   => $site_config['site_name'],
-        'company_url'    => $site_config['base_url'] . '/',
-        'support_email'  => $site_config['support_email'],
+        'logo_url'       => 'https://betabd.zodiaccdn.com/sgi/images/logo.png',
+        'company_name'   => 'SocialIG',
+        'company_url'    => 'https://betabd.zodiaccdn.com/sgi/',
+        'support_email'  => 'support@socialig.com',
         'primary_color'  => '#667eea',
         'secondary_color' => '#764ba2'
     ]

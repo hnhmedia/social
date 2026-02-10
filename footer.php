@@ -17,16 +17,16 @@
                 <div class="footer-column">
                     <h4>Services</h4>
                     <ul>
-                        <li><a href="<?php echo Config::baseUrl('buy-instagram-followers'); ?>">Buy Instagram Followers</a></li>
-                        <li><a href="<?php echo Config::baseUrl('buy-instagram-likes'); ?>">Buy Instagram Likes</a></li>
-                        <li><a href="<?php echo Config::baseUrl('buy-instagram-views'); ?>">Buy Instagram Views</a></li>
-                        <li><a href="<?php echo Config::baseUrl('buy-instagram-reels'); ?>">Buy Reels Likes & Views</a></li>
-                        <li><a href="<?php echo Config::baseUrl('automatic-likes'); ?>">Automatic Likes</a></li>
-                        <li><a href="<?php echo Config::baseUrl('buy-tiktok-followers'); ?>">Buy TikTok Followers</a></li>
-                        <li><a href="<?php echo Config::baseUrl('buy-tiktok-likes'); ?>">Buy TikTok Likes</a></li>
-                        <li><a href="<?php echo Config::baseUrl('buy-tiktok-views'); ?>">Buy TikTok Views</a></li>
-                        <li><a href="<?php echo Config::baseUrl('buy-facebook-post-likes'); ?>">Buy Facebook Post Likes</a></li>
-                        <li><a href="<?php echo Config::baseUrl('buy-facebook-page-likes'); ?>">Buy Facebook Page Likes</a></li>
+                        <li><a href="<?php echo Config::baseUrl('services/buy-instagram-followers'); ?>">Buy Instagram Followers</a></li>
+                        <li><a href="<?php echo Config::baseUrl('services/buy-instagram-likes'); ?>">Buy Instagram Likes</a></li>
+                        <li><a href="<?php echo Config::baseUrl('services/buy-instagram-views'); ?>">Buy Instagram Views</a></li>
+                        <li><a href="<?php echo Config::baseUrl('services/buy-instagram-reels'); ?>">Buy Reels Likes & Views</a></li>
+                        <li><a href="<?php echo Config::baseUrl('services/automatic-likes'); ?>">Automatic Likes</a></li>
+                        <li><a href="<?php echo Config::baseUrl('services/buy-tiktok-followers'); ?>">Buy TikTok Followers</a></li>
+                        <li><a href="<?php echo Config::baseUrl('services/buy-tiktok-likes'); ?>">Buy TikTok Likes</a></li>
+                        <li><a href="<?php echo Config::baseUrl('services/buy-tiktok-views'); ?>">Buy TikTok Views</a></li>
+                        <li><a href="<?php echo Config::baseUrl('services/buy-facebook-post-likes'); ?>">Buy Facebook Post Likes</a></li>
+                        <li><a href="<?php echo Config::baseUrl('services/buy-facebook-page-likes'); ?>">Buy Facebook Page Likes</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">

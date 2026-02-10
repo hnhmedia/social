@@ -5,6 +5,7 @@
  */
 
 require_once __DIR__ . '/Database.php';
+require_once __DIR__ . '/Config.php';
 
 /**
  * Get featured services for homepage with today's order count
@@ -54,7 +55,7 @@ function getHomepageServices() {
             'today_count' => $todayCount,
             'avatars' => generateRandomAvatars(3), // Random avatar IDs for display
             'features' => $features,
-            'link' => Config::baseUrl() . $service['slug'],
+            'link' => Config::baseUrl('services/' . $service['slug']),
             'avg_delivery' => $service['avg_delivery'] ?: '30 min',
             'min_quantity' => $packageRange['min'],
             'max_quantity' => $packageRange['max']

@@ -5,6 +5,7 @@
  */
 
 require_once __DIR__ . '/dynamic_service_integration.php';
+require_once __DIR__ . '/Config.php';
 
 /**
  * Get mega menu structure for Services dropdown
@@ -59,7 +60,7 @@ function generateMegaMenuHTML() {
                 <ul class="mega-menu-list">
                     <?php foreach($item['services'] as $service): ?>
                     <li>
-                        <a href="/sgi/<?php echo htmlspecialchars($service['slug']); ?>">
+                        <a href="<?php echo Config::baseUrl('services/' . htmlspecialchars($service['slug'])); ?>">
                             <?php if (!empty($service['icon'])): ?>
                             <span class="service-icon"><?php echo $service['icon']; ?></span>
                             <?php endif; ?>

@@ -42,11 +42,11 @@
 
             <!-- Service Links -->
             <div class="service-links">
-                <a href="<?php echo $baseUrl; ?>/buy-instagram-followers" class="service-link">BUY INSTAGRAM FOLLOWERS</a>
-                <a href="<?php echo $baseUrl; ?>/buy-instagram-likes" class="service-link">BUY INSTAGRAM LIKES</a>
-                <a href="<?php echo $baseUrl; ?>/buy-instagram-views" class="service-link">BUY INSTAGRAM VIEWS</a>
-                <a href="<?php echo $baseUrl; ?>/buy-tiktok-followers" class="service-link">BUY TIKTOK FOLLOWERS</a>
-                <a href="<?php echo $baseUrl; ?>/buy-tiktok-likes" class="service-link">BUY TIKTOK LIKES</a>
+                <a href="<?php echo $baseUrl; ?>/services/buy-instagram-followers" class="service-link">BUY INSTAGRAM FOLLOWERS</a>
+                <a href="<?php echo $baseUrl; ?>/services/buy-instagram-likes" class="service-link">BUY INSTAGRAM LIKES</a>
+                <a href="<?php echo $baseUrl; ?>/services/buy-instagram-views" class="service-link">BUY INSTAGRAM VIEWS</a>
+                <a href="<?php echo $baseUrl; ?>/services/buy-tiktok-followers" class="service-link">BUY TIKTOK FOLLOWERS</a>
+                <a href="<?php echo $baseUrl; ?>/services/buy-tiktok-likes" class="service-link">BUY TIKTOK LIKES</a>
             </div>
 
             <!-- Live Notification -->
