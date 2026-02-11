@@ -86,75 +86,88 @@ if (isset($_GET['edit'])) {
     </div>
     
     <?php if (count($testimonials) > 0): ?>
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Service</th>
-                    <th>Title</th>
-                    <th>Content</th>
-                    <th>Rating</th>
-                    <th>Status</th>
-                    <th>Featured</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($testimonials as $testimonial): ?>
+        <div style="overflow-x: auto;">
+            <table class="data-table" style="min-width: 100%;">
+                <thead>
                     <tr>
-                        <td>#<?php echo $testimonial['id']; ?></td>
-                        <td>
-                            <strong><?php echo htmlspecialchars($testimonial['name']); ?></strong>
-                            <?php if ($testimonial['email']): ?>
-                                <br><small style="color: #64748b;"><?php echo htmlspecialchars($testimonial['email']); ?></small>
-                            <?php endif; ?>
-                        </td>
-                        <td>
-                            <?php if ($testimonial['service_type']): ?>
-                                <span class="badge badge-info"><?php echo htmlspecialchars($testimonial['service_type']); ?></span>
-                            <?php else: ?>
-                                <span style="color: #cbd5e1;">—</span>
-                            <?php endif; ?>
-                        </td>
-                        <td>
-                            <?php if ($testimonial['title']): ?>
-                                <?php echo htmlspecialchars($testimonial['title']); ?>
-                            <?php else: ?>
-                                <span style="color: #cbd5e1;">—</span>
-                            <?php endif; ?>
-                        </td>
-                        <td><?php echo htmlspecialchars(substr($testimonial['content'], 0, 60)) . '...'; ?></td>
-                        <td>
-                            <?php 
-                            $rating = $testimonial['rating'] ?? 5;
-                            echo str_repeat('⭐', $rating);
-                            ?>
-                        </td>
-                        <td>
-                            <?php if ($testimonial['active']): ?>
-                                <span class="badge badge-success">Active</span>
-                            <?php else: ?>
-                                <span class="badge badge-warning">Inactive</span>
-                            <?php endif; ?>
-                        </td>
-                        <td>
-                            <?php if ($testimonial['featured']): ?>
-                                <span style="font-size: 1.2rem;">⭐</span>
-                            <?php else: ?>
-                                <span style="color: #cbd5e1;">☆</span>
-                            <?php endif; ?>
-                        </td>
-                        <td class="table-actions">
-                            <a href="?edit=<?php echo $testimonial['id']; ?>" class="btn-secondary">Edit</a>
-                            <a href="?delete=<?php echo $testimonial['id']; ?>" 
-                               class="btn-danger" 
-                               onclick="return confirmDelete('Are you sure you want to delete this testimonial?')">Delete</a>
-                        </td>
+                        <th style="width: 50px;">ID</th>
+                        <th style="min-width: 150px;">Customer</th>
+                        <th style="width: 200px;">Testimonial</th>
+                        <th style="width: 80px; text-align: center;">Rating</th>
+                        <th style="width: 80px; text-align: center;">Status</th>
+                        <th style="width: 180px; text-align: right;">Actions</th>
                     </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <?php foreach ($testimonials as $testimonial): ?>
+                        <tr>
+                            <td style="font-weight: 600; color: #64748b;">#<?php echo $testimonial['id']; ?></td>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                    <?php if ($testimonial['avatar_url']): ?>
+                                        <img src="<?php echo htmlspecialchars($testimonial['avatar_url']); ?>" 
+                                             alt="Avatar" 
+                                             style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #e2e8f0;">
+                                    <?php else: ?>
+                                        <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 1.125rem;">
+                                            <?php echo strtoupper(substr($testimonial['name'], 0, 1)); ?>
+                                        </div>
+                                    <?php endif; ?>
+                                    <div style="flex: 1; min-width: 0;">
+                                        <div style="font-weight: 600; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                            <?php echo htmlspecialchars($testimonial['name']); ?>
+                                            <?php if ($testimonial['featured']): ?>
+                                                <span style="font-size: 0.875rem; margin-left: 0.25rem;">⭐</span>
+                                            <?php endif; ?>
+                                        </div>
+                                        <?php if ($testimonial['service_type']): ?>
+                                            <div style="font-size: 0.75rem; color: #64748b; margin-top: 0.125rem;">
+                                                <?php echo htmlspecialchars($testimonial['service_type']); ?>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <?php if ($testimonial['title']): ?>
+                                    <div style="font-weight: 600; color: #1e293b; margin-bottom: 0.25rem; font-size: 0.875rem;">
+                                        <?php echo htmlspecialchars(substr($testimonial['title'], 0, 40)) . (strlen($testimonial['title']) > 40 ? '...' : ''); ?>
+                                    </div>
+                                <?php endif; ?>
+                                <div style="font-size: 0.875rem; color: #64748b; line-height: 1.4;">
+                                    <?php echo htmlspecialchars(substr($testimonial['content'], 0, 80)) . '...'; ?>
+                                </div>
+                            </td>
+                            <td style="text-align: center;">
+                                <div style="font-size: 1rem; line-height: 1;">
+                                    <?php 
+                                    $rating = $testimonial['rating'] ?? 5;
+                                    echo str_repeat('⭐', $rating);
+                                    ?>
+                                </div>
+                                <div style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem;">
+                                    <?php echo $rating; ?>/5
+                                </div>
+                            </td>
+                            <td style="text-align: center;">
+                                <?php if ($testimonial['active']): ?>
+                                    <span class="badge badge-success" style="font-size: 0.75rem;">Active</span>
+                                <?php else: ?>
+                                    <span class="badge badge-warning" style="font-size: 0.75rem;">Inactive</span>
+                                <?php endif; ?>
+                            </td>
+                            <td class="table-actions" style="text-align: right;">
+                                <a href="?edit=<?php echo $testimonial['id']; ?>" class="btn-secondary" style="padding: 0.5rem 0.75rem; font-size: 0.875rem;">Edit</a>
+                                <a href="?delete=<?php echo $testimonial['id']; ?>" 
+                                   class="btn-danger" 
+                                   style="padding: 0.5rem 0.75rem; font-size: 0.875rem;"
+                                   onclick="return confirmDelete('Are you sure you want to delete this testimonial?')">Delete</a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
     <?php else: ?>
         <div class="empty-state">
             <h3>No Testimonials Found</h3>
@@ -238,7 +251,7 @@ if (isset($_GET['edit'])) {
             <div class="form-group">
                 <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
                     <input type="checkbox" id="active" name="active" 
-                           <?php echo (!$editTestimonial || $editTestimonial['active']) ? '' : ''; ?>
+                           <?php echo ($editTestimonial && $editTestimonial['active']) ? 'checked' : ''; ?>
                            style="width: auto;">
                     <span>Active (Show on website)</span>
                 </label>

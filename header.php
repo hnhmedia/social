@@ -27,11 +27,7 @@
             }, 'google_translate_element');
         }
     </script>
-    
-
-<script type="text/javascript"
-  src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
-</script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <style>
         /* Hide Google Translate banner */
         .goog-te-banner-frame.skiptranslate {
@@ -150,17 +146,8 @@
         </div>
     </nav>
 
-    <div id="google_translate_element"></div>
-<script> 
-function googleTranslateElementInit() {
-  new google.translate.TranslateElement({
-    pageLanguage: 'en'
-  }, 'google_translate_element');
-}
-</script>
-<script src="http://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script> 
-    
     <!-- Hidden Google Translate Element -->
+    <div id="google_translate_element"></div>
     
     <!-- Mega Menu Overlay -->
     <div class="mega-menu-overlay" id="megaMenuOverlay"></div>

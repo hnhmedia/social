@@ -31,6 +31,15 @@ requireLogin();
                 <a href="orders.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'orders.php' ? 'active' : ''; ?>">
                     <span>📦</span> Orders
                 </a>
+                <a href="services.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'services.php' ? 'active' : ''; ?>">
+                    <span>🛍️</span> Services
+                </a>
+                <a href="service_tags.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'service_tags.php' ? 'active' : ''; ?>">
+                    <span>🏷️</span> Service Tags
+                </a>
+                <a href="packages.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'packages.php' ? 'active' : ''; ?>">
+                    <span>💰</span> Packages
+                </a>
                 <a href="faqs.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'faqs.php' ? 'active' : ''; ?>">
                     <span>❓</span> FAQs
                 </a>

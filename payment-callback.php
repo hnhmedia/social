@@ -24,7 +24,7 @@ try {
     $db = Database::getConnection();
     
     // Get order from database
-    $order = $db->where('id', $orderId)->getOne('si_orders');
+    $order = $db->where('id', $orderId)->getOne('orders');
     
     if (!$order) {
         http_response_code(404);
@@ -64,7 +64,7 @@ try {
     
     // Update order
     $db->where('id', $orderId);
-    $updated = $db->update('si_orders', $updateData);
+    $updated = $db->update('orders', $updateData);
     
     if ($updated) {
         // Log successful update

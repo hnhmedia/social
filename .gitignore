@@ -1,0 +1,94 @@
+# Environment & Configuration Files
+.env
+.env.local
+.env.*.local
+config/database.php.local
+
+# Composer Dependencies
+/vendor/
+composer.lock
+
+# Node Dependencies
+/node_modules/
+package-lock.json
+yarn.lock
+
+# IDE & Editor Files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+Thumbs.db
+
+# Log Files
+*.log
+/logs/
+/storage/logs/
+error_log
+debug.log
+
+# Cache & Temporary Files
+/cache/
+/tmp/
+/temp/
+*.cache
+*.tmp
+
+# Upload Directories (if containing user uploads)
+/uploads/*.jpg
+/uploads/*.jpeg
+/uploads/*.png
+/uploads/*.gif
+/uploads/*.pdf
+# But keep the directory structure
+!/uploads/.gitkeep
+
+# Backup Files
+*.backup
+*.bak
+*.sql
+*.dump
+db_backup_*.sql
+
+# OS Generated Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Desktop.ini
+
+# Session Files
+/storage/sessions/
+/tmp/sessions/
+
+# Compiled Files
+*.compiled
+
+# Documentation Builds
+/docs/_build/
+
+# Testing
+/coverage/
+phpunit.xml.local
+.phpunit.result.cache
+
+# Security Keys
+*.pem
+*.key
+*.crt
+*.csr
+
+# Development Tools
+.php_cs.cache
+.phpunit.cache
+
+# Sensitive Files (even if they should be elsewhere)
+*password*
+*secret*
+*credentials*
+# Exceptions for example files
+!.env.example
+!config.example.php
