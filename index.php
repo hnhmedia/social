@@ -4,6 +4,9 @@
  * Routes requests to appropriate module files
  */
 
+// Handle 301/302 redirects first
+require_once __DIR__ . '/includes/redirect_handler.php';
+
 // Include Config for dynamic site name
 require_once __DIR__ . '/includes/Config.php';
 
@@ -58,7 +61,7 @@ if (file_exists($moduleFile)) {
     if (file_exists(__DIR__ . '/modules/404.php')) {
         include __DIR__ . '/modules/404.php';
     } else {
-        echo '<div style="text-align:center;padding:50px;"><h1>404 - Page Not Found</h1><p>The page you are looking for does not exist.</p></div>';
+        echo '<div style="text-align:center;padding:80px;"><h1>404 - Page Not Found</h1><p>The page you are looking for does not exist.</p></div>';
     }
 }
 

@@ -9,8 +9,28 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+function requireRole($roles) {
+    $roles = (array)$roles;
+    if (!isLoggedIn() || !in_array(getAdminRole(), $roles, true)) {
+        header('Location: dashboard.php');
+        exit;
+    }
+}
+
 // Include database
 require_once __DIR__ . '/db.php';
+
+// CSRF helpers
+function csrfToken() {
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+    return $_SESSION['csrf_token'];
+}
+
+function verifyCsrfToken($token) {
+    return isset($_SESSION['csrf_token']) && is_string($token) && hash_equals($_SESSION['csrf_token'], $token);
+}
 
 /**
  * Check if admin is logged in
@@ -58,6 +78,7 @@ function loginAdmin($username) {
     $admin = getAdminByUsername($username);
     
     if ($admin) {
+        session_regenerate_id(true);
         $_SESSION['admin_logged_in'] = true;
         $_SESSION['admin_id'] = $admin['id'];
         $_SESSION['admin_username'] = $admin['username'];
@@ -119,6 +140,36 @@ function getAdminId() {
  */
 function getAdminRole() {
     return $_SESSION['admin_role'] ?? 'admin';
+}
+
+/**
+ * Check if current admin is super admin
+ */
+function isSuperAdmin() {
+    return getAdminRole() === 'super_admin';
+}
+
+/**
+ * Check if current admin is SEO manager
+ */
+function isSEOManager() {
+    return getAdminRole() === 'seo_manager';
+}
+
+/**
+ * Check if current admin has access to full admin panel
+ */
+function hasFullAccess() {
+    $role = getAdminRole();
+    return in_array($role, ['super_admin', 'admin'], true);
+}
+
+/**
+ * Check if current admin has access to SEO sections
+ */
+function hasSEOAccess() {
+    $role = getAdminRole();
+    return in_array($role, ['super_admin', 'admin', 'seo_manager'], true);
 }
 
 /**

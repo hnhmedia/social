@@ -1,6 +1,6 @@
             </div>
             <footer class="admin-footer">
-                <p>&copy; <?php echo date('Y'); ?> SocialIG Admin Panel. All rights reserved.</p>
+                <p>&copy; <?php echo date('Y'); ?> Genuine Socials Admin Panel. All rights reserved.</p>
             </footer>
         </main>
     </div>

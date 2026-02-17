@@ -380,8 +380,8 @@ if ($package['original_price'] && $package['original_price'] > $package['price']
                     </svg>
                 </a>
                 <a href="<?php echo Config::baseUrl(); ?>/" class="logo">
-                    <div class="logo-icon">F</div>
-                    <span>FAMOID</span>
+                    <div class="logo-icon">G</div>
+                    <span>Genuine Socials</span>
                 </a>
             </div>
             <div class="header-right">
@@ -466,8 +466,6 @@ if ($package['original_price'] && $package['original_price'] > $package['price']
                             } else {
                                 echo 'Username *';
                             }
-                        } elseif (strpos($package['service_slug'], 'facebook') !== false) {
-                            echo 'Facebook Page URL *';
                         } else {
                             echo 'Profile/Page URL *';
                         }

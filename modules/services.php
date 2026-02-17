@@ -26,12 +26,13 @@ if (!$service) {
 // Get service tags
 $serviceTags = getServiceTags($service['id']);
 
-// Get packages for first tag (default)
-$firstTag = !empty($serviceTags) ? $serviceTags[0] : null;
-$defaultPackages = $firstTag ? getServicePackages($service['id'], $firstTag['id']) : [];
 
-// Format packages for JavaScript - WITH CODES FOR CLEAN URLs
-$packagesJS = formatPackagesWithCodes($serviceTags);
+// ✅ FIX: Get packages for first tag OR all packages if no tags exist
+$firstTag = !empty($serviceTags) ? $serviceTags[0] : null;
+$defaultPackages = $firstTag ? getServicePackages($service['id'], $firstTag['id']) : getServicePackages($service['id'], null);
+
+// ✅ FIX: Format packages for JavaScript - handle both tagged and non-tagged services
+$packagesJS = !empty($serviceTags) ? formatPackagesWithCodes($serviceTags) : formatAllPackages($service['id']);
 
 // Get FAQs
 $faqItems = getServiceFaqs($serviceSlug);
@@ -41,13 +42,23 @@ $testimonials = getFormattedTestimonials();
 
 // Get first tag features for trust bar (use the first tag's features)
 $trustBarFeatures = $firstTag && !empty($firstTag['features']) ? $firstTag['features'] : ['Real Service', 'No Password', '24/7 Support', 'Fast Delivery'];
+
+// First package price data for initial render
+$fp         = !empty($defaultPackages) ? $defaultPackages[0] : null;
+$fpPrice    = $fp ? (float)$fp['price'] : 0;
+$fpOrig     = ($fp && !empty($fp['original_price'])) ? (float)$fp['original_price'] : null;
+$fpSaving   = ($fpOrig && $fpOrig > $fpPrice) ? round($fpOrig - $fpPrice, 2) : 0;
+
+// Last word of slug for package label (e.g. "followers" from "buy-instagram-followers")
+$slugParts     = explode('-', $serviceSlug);
+$pkgLabelWord  = ucfirst(str_replace(['-', '_'], ' ', end($slugParts)));
 ?>
 
 <link rel="stylesheet" href="<?php echo Config::baseUrl(); ?>/css/service-details.css">
 
 <!-- PAGE TITLE -->
 <br clear="both">
-<main style="flex: 1;padding-top:10px">
+<main style="flex: 1;padding-top:60px">
 <div class="ig-page-title">
     <h1><?php echo htmlspecialchars($service['page_title']); ?></h1>
     <p><?php echo htmlspecialchars($service['page_subtitle']); ?></p>
@@ -58,7 +69,7 @@ $trustBarFeatures = $firstTag && !empty($firstTag['features']) ? $firstTag['feat
 <div class="order-main-card" id="order">
     <div style="display: flex; flex-direction: column; gap: 1rem;">
         <div style="width: 100%;">
-            <div style="max-width: 650px; margin: 0 auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+            <div style="max-width: 960px; width: 100%; margin: 0 auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
 
                 <!-- Rating Bar -->
                 <div class="rating-bar">
@@ -82,10 +93,12 @@ $trustBarFeatures = $firstTag && !empty($firstTag['features']) ? $firstTag['feat
                     </div>
                 </div>
 
-                <!-- Service Tabs -->
-                <?php if (!empty($serviceTags)): ?>
+                <!-- ✅ UPDATED: Show widget whether tags exist or not -->
                 <div class="order-widget-inner">
                     <div style="overflow: visible; background: transparent;">
+                        
+                        <!-- Service Tabs - only show if tags exist -->
+                        <?php if (!empty($serviceTags)): ?>
                         <div style="display: flex; justify-content: center;">
                             <div class="service-tabs">
                                 <?php foreach($serviceTags as $index => $tag): ?>
@@ -108,6 +121,7 @@ $trustBarFeatures = $firstTag && !empty($firstTag['features']) ? $firstTag['feat
                                 <?php endforeach; ?>
                             </div>
                         </div>
+                        <?php endif; ?>
 
                         <!-- Trust Bar (Features) -->
                         <div class="trust-bar" id="trustBar">
@@ -118,13 +132,16 @@ $trustBarFeatures = $firstTag && !empty($firstTag['features']) ? $firstTag['feat
                             <?php endforeach; ?>
                         </div>
 
-                        <!-- Package Grid -->
+                        <!-- Package Grid - show whether tags exist or not -->
+                        <?php if (!empty($defaultPackages)): ?>
                         <div class="package-select-grid" id="packageGrid">
                             <?php foreach($defaultPackages as $i => $pack): ?>
+                            <?php $packOrig = !empty($pack['original_price']) ? (float)$pack['original_price'] : 'null'; ?>
                             <div class="pkg-card <?php echo $i === 0 ? 'selected' : ''; ?>"
-                                 onclick="selectPackage(this, <?php echo $pack['quantity']; ?>, <?php echo $pack['price']; ?>, '<?php echo $pack['package_code']; ?>', <?php echo $pack['id']; ?>)"
+                                 onclick="selectPackage(this, <?php echo $pack['quantity']; ?>, <?php echo $pack['price']; ?>, '<?php echo $pack['package_code']; ?>', <?php echo $pack['id']; ?>, <?php echo $packOrig; ?>)"
                                  data-qty="<?php echo $pack['quantity']; ?>" 
                                  data-price="<?php echo $pack['price']; ?>"
+                                 data-orig="<?php echo !empty($pack['original_price']) ? $pack['original_price'] : ''; ?>"
                                  data-code="<?php echo $pack['package_code']; ?>"
                                  data-id="<?php echo $pack['id']; ?>">
                                 <div class="pkg-check">
@@ -132,7 +149,7 @@ $trustBarFeatures = $firstTag && !empty($firstTag['features']) ? $firstTag['feat
                                 </div>
                                 <div style="text-align: center;">
                                     <span class="pkg-qty"><?php echo number_format($pack['quantity']); ?></span>
-                                    <span class="pkg-label-text"><?php echo ucfirst(str_replace(['-', '_'], ' ', explode('-', $serviceSlug)[count(explode('-', $serviceSlug)) - 1])); ?></span>
+                                    <span class="pkg-label-text"><?php echo $pkgLabelWord; ?></span>
                                 </div>
                                 <?php if($pack['discount_label'] && (strpos($pack['discount_label'], 'Off') !== false || strpos($pack['discount_label'], 'Save') !== false)): ?>
                                 <div style="margin-top:5px;height:25px;">
@@ -144,20 +161,32 @@ $trustBarFeatures = $firstTag && !empty($firstTag['features']) ? $firstTag['feat
                             </div>
                             <?php endforeach; ?>
                         </div>
+                        <?php else: ?>
+                        <div style="padding: 2rem; text-align: center; color: #64748b;">
+                            <p>No packages available for this service yet.</p>
+                        </div>
+                        <?php endif; ?>
 
                         <!-- Price & Buy Now -->
+                        <?php if (!empty($defaultPackages)): ?>
                         <div class="order-action">
-                            <div class="order-price">
-                                <span id="displayPrice">$<?php echo !empty($defaultPackages) ? number_format($defaultPackages[0]['price'], 2) : '0.00'; ?></span>
+                            <div style="display:flex;align-items:baseline;flex-wrap:wrap;justify-content:center;gap:0.5rem;margin-bottom:0.75rem;">
+                                <span id="displayPrice" style="font-size:1.18rem;font-weight:800;color:#111827;letter-spacing:-0.03em;">$<?php echo number_format($fpPrice, 2); ?></span>
+                                <span id="displayOriginalPrice" style="font-size:1.15rem;font-weight:400;color:#9ca3af;text-decoration:line-through;<?php echo $fpOrig ? '' : 'display:none;'; ?>">
+                                    $<?php echo $fpOrig ? number_format($fpOrig, 2) : '0.00'; ?>
+                                </span>
+                                <span id="displaySaving" style="font-size:1.05rem;font-weight:700;color:#16a34a;<?php echo $fpSaving > 0 ? '' : 'display:none;'; ?>">
+                                    You Save $<?php echo number_format($fpSaving, 2); ?>
+                                </span>
                             </div>
                             <a href="javascript:void(0);" onclick="handleBuyNow()" class="buy-now-btn" id="buyNowBtn">Buy Now!</a>
                         </div>
+                        <?php endif; ?>
 
                         <!-- Terms -->
-                        <p class="order-terms">By initiating this order, you agree to <a href="terms-of-service.php" target="_blank">terms of service</a> and <a href="privacy-policy.php" target="_blank">privacy policy</a>.</p>
+                        <p class="order-terms">By initiating this order, you agree to <a href="<?php echo Config::baseUrl('terms-of-service'); ?>" target="_blank">terms of service</a> and <a href="<?php echo Config::baseUrl('privacy-policy'); ?>" target="_blank">privacy policy</a>.</p>
                     </div>
                 </div>
-                <?php endif; ?>
 
                 <!-- Payment Footer -->
                 <div class="payment-footer">
@@ -182,14 +211,14 @@ $trustBarFeatures = $firstTag && !empty($firstTag['features']) ? $firstTag['feat
 
 <!-- FEATURES SECTION -->
 <div class="ig-features-section" style="text-align: center;">
-    <span class="section-badge">America's #1 Social Media Marketing Agency</span>
-    <h2>Start Your Growth Right Away with Famoid!</h2>
-    <p>With Famoid, you can easily purchase services and boost your account naturally through Ads.</p>
+    <span class="section-badge">Ad-backed, human-first delivery</span>
+    <h2>Start your growth with Genuine Socials</h2>
+    <p>Get services that feel organic. We combine ad distribution with gradual delivery so results look real.</p>
     <div class="ig-features-grid">
         <div class="ig-feature-card">
             <div class="icon">😊</div>
             <h3>Satisfaction Guaranteed</h3>
-            <p>Your success is assured with Famoid. We constantly strive to provide the best-in-class service.</p>
+            <p>Your success is our priority. If something slips, we fix it immediately.</p>
         </div>
         <div class="ig-feature-card">
             <div class="icon">📊</div>
@@ -212,10 +241,11 @@ $trustBarFeatures = $firstTag && !empty($firstTag['features']) ? $firstTag['feat
                 <?php
                 for ($i = 0; $i < 2; $i++) {
                     foreach ($testimonials as $testimonial) {
+                        $avatarId = (abs(crc32($testimonial['name'])) % 70) + 1;
                 ?>
                 <div class="testimonial-card">
                     <div class="testimonial-header">
-                        <img src="https://i.pravatar.cc/96?img=<?php echo $testimonial['img']; ?>" alt="<?php echo $testimonial['name']; ?>" class="testimonial-avatar">
+                        <img src="https://i.pravatar.cc/60?img=<?php echo $avatarId; ?>" alt="<?php echo $testimonial['name']; ?>" class="testimonial-avatar">
                         <div class="testimonial-info">
                             <h4><?php echo $testimonial['name']; ?></h4>
                             <span><?php echo $testimonial['date']; ?></span>
@@ -260,7 +290,7 @@ $trustBarFeatures = $firstTag && !empty($firstTag['features']) ? $firstTag['feat
                             <p><?php echo htmlspecialchars($faq['a']); ?></p>
                             <span class="verified">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                                Verified by Famoid Team
+                                Verified by Genuine Socials Team
                             </span>
                         </div>
                     </div>
@@ -298,92 +328,129 @@ $trustBarFeatures = $firstTag && !empty($firstTag['features']) ? $firstTag['feat
 
 <!-- JAVASCRIPT - CLEAN URL VERSION -->
 <script>
-const tabPackages = <?php echo json_encode($packagesJS); ?>;
-let currentTab = '<?php echo !empty($serviceTags) ? $serviceTags[0]['tag_slug'] : ''; ?>';
-let selectedQty = <?php echo !empty($defaultPackages) ? $defaultPackages[0]['quantity'] : 0; ?>;
-let selectedPrice = <?php echo !empty($defaultPackages) ? $defaultPackages[0]['price'] : 0; ?>;
+const tabPackages = <?php echo json_encode($packagesJS, JSON_HEX_TAG | JSON_HEX_APOS); ?>;
+let currentTab          = '<?php echo !empty($serviceTags) ? $serviceTags[0]['tag_slug'] : 'default'; ?>';
+let selectedQty         = <?php echo !empty($defaultPackages) ? $defaultPackages[0]['quantity'] : 0; ?>;
+let selectedPrice       = <?php echo !empty($defaultPackages) ? $defaultPackages[0]['price'] : 0; ?>;
 let selectedPackageCode = '<?php echo !empty($defaultPackages) ? $defaultPackages[0]['package_code'] : ''; ?>';
-let selectedPackageId = <?php echo !empty($defaultPackages) ? $defaultPackages[0]['id'] : 0; ?>;
+let selectedPackageId   = <?php echo !empty($defaultPackages) ? $defaultPackages[0]['id'] : 0; ?>;
+const pkgLabelWord      = '<?php echo $pkgLabelWord; ?>';
 
-// Switch tab
+/* -------------------------------------------------------
+   updatePriceDisplay(price, originalPrice)
+   Shows:  $8.95  $19.75  You Save $10.80
+   Or just: $15.95  (when no original price)
+------------------------------------------------------- */
+function updatePriceDisplay(price, originalPrice) {
+    var elPrice  = document.getElementById('displayPrice');
+    var elOrig   = document.getElementById('displayOriginalPrice');
+    var elSaving = document.getElementById('displaySaving');
+    if (!elPrice) return;
+
+    elPrice.textContent = '$' + price.toFixed(2);
+
+    if (originalPrice && originalPrice > price) {
+        var saving = (originalPrice - price).toFixed(2);
+        elOrig.textContent     = '$' + originalPrice.toFixed(2);
+        elOrig.style.display   = '';
+        elSaving.textContent   = 'You Save $' + saving;
+        elSaving.style.display = '';
+    } else {
+        elOrig.style.display   = 'none';
+        elSaving.style.display = 'none';
+    }
+}
+
+/* -------------------------------------------------------
+   switchTab — handles tab click, rebuilds package grid
+------------------------------------------------------- */
 function switchTab(tab, btn) {
     currentTab = tab;
-    document.querySelectorAll('.service-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.service-tab').forEach(function(t) { t.classList.remove('active'); });
     btn.classList.add('active');
-    
-    // Update trust bar with features from selected tab
-    const features = JSON.parse(btn.getAttribute('data-features') || '[]');
-    const trustBar = document.getElementById('trustBar');
+
+    // Update trust bar
+    var features = JSON.parse(btn.getAttribute('data-features') || '[]');
+    var trustBar = document.getElementById('trustBar');
     if (trustBar && features.length > 0) {
-        trustBar.innerHTML = features.map(f => 
-            `<div class="trust-bar-item"><span>${f}</span></div>`
-        ).join('');
+        trustBar.innerHTML = features.map(function(f) {
+            return '<div class="trust-bar-item"><span>' + f + '</span></div>';
+        }).join('');
     }
-    
-    // Update packages
-    const grid = document.getElementById('packageGrid');
-    const packs = tabPackages[tab] || [];
+
+    // Rebuild package grid
+    var grid  = document.getElementById('packageGrid');
+    var packs = tabPackages[tab] || [];
     grid.innerHTML = '';
-    
-    packs.forEach((pack, i) => {
-        const card = document.createElement('div');
+
+    packs.forEach(function(pack, i) {
+        var card = document.createElement('div');
         card.className = 'pkg-card' + (i === 0 ? ' selected' : '');
-        card.setAttribute('data-qty', pack.qty);
+        card.setAttribute('data-qty',   pack.qty);
         card.setAttribute('data-price', pack.price);
-        card.setAttribute('data-code', pack.code);
-        card.setAttribute('data-id', pack.id);
-        card.onclick = function() { selectPackage(this, pack.qty, pack.price, pack.code, pack.id); };
-        
-        let saveHtml = '';
-        if (pack.label && (pack.label.includes('Save') || pack.label.includes('/month') || pack.label === 'Premium' || pack.label.includes('Off'))) {
+        card.setAttribute('data-orig',  pack.original_price || '');
+        card.setAttribute('data-code',  pack.code);
+        card.setAttribute('data-id',    pack.id);
+
+        var origArg = pack.original_price ? pack.original_price : 'null';
+        card.setAttribute('onclick', 'selectPackage(this,' + pack.qty + ',' + pack.price + ',"' + pack.code + '",' + pack.id + ',' + origArg + ')');
+
+        var saveHtml = '';
+        if (pack.label && (pack.label.indexOf('Off') !== -1 || pack.label.indexOf('Save') !== -1 || pack.label === 'Premium' || pack.label.indexOf('/month') !== -1)) {
             saveHtml = '<div style="margin-top:5px;height:25px;"><span class="pkg-save-badge">' + pack.label + '</span></div>';
         } else {
             saveHtml = '<div style="margin-top:5px;height:25px;"></div>';
         }
-        
+
         card.innerHTML =
-        '<div class="pkg-check"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>' +
-        '<div style="text-align: center;"><span class="pkg-qty">' + pack.qty.toLocaleString() + '</span>' +
-        '<span class="pkg-label-text"><?php echo ucfirst(str_replace(["-", "_"], " ", explode("-", $serviceSlug)[count(explode("-", $serviceSlug)) - 1])); ?></span></div>' + saveHtml;
-        
+            '<div class="pkg-check"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>' +
+            '<div style="text-align:center;"><span class="pkg-qty">' + pack.qty.toLocaleString() + '</span>' +
+            '<span class="pkg-label-text">' + pkgLabelWord + '</span></div>' +
+            saveHtml;
+
         grid.appendChild(card);
     });
-    
+
     if (packs.length > 0) {
-        selectedQty = packs[0].qty;
-        selectedPrice = packs[0].price;
+        selectedQty         = packs[0].qty;
+        selectedPrice       = packs[0].price;
         selectedPackageCode = packs[0].code;
-        selectedPackageId = packs[0].id;
-        document.getElementById('displayPrice').textContent = '$' + packs[0].price.toFixed(2);
+        selectedPackageId   = packs[0].id;
+        updatePriceDisplay(packs[0].price, packs[0].original_price || null);
     }
 }
 
-// Select package - CLEAN URL VERSION
-function selectPackage(el, qty, price, code, id) {
-    document.querySelectorAll('.pkg-card').forEach(c => c.classList.remove('selected'));
+/* -------------------------------------------------------
+   selectPackage — called when user clicks a package card
+------------------------------------------------------- */
+function selectPackage(el, qty, price, code, id, originalPrice) {
+    document.querySelectorAll('.pkg-card').forEach(function(c) { c.classList.remove('selected'); });
     el.classList.add('selected');
-    selectedQty = qty;
-    selectedPrice = price;
+    selectedQty         = qty;
+    selectedPrice       = price;
     selectedPackageCode = code;
-    selectedPackageId = id;
-    document.getElementById('displayPrice').textContent = '$' + price.toFixed(2);
+    selectedPackageId   = id;
+    updatePriceDisplay(price, originalPrice || null);
 }
 
-// Buy Now - CLEAN URL VERSION
+/* -------------------------------------------------------
+   handleBuyNow — redirect to order clean URL
+------------------------------------------------------- */
 function handleBuyNow() {
     if (!selectedPackageCode) {
         alert('Please select a package');
         return;
     }
-    // Redirect to clean URL: /order/2IGF/
     window.location.href = '<?php echo Config::baseUrl(); ?>order/' + selectedPackageCode + '/';
 }
 
-// FAQ toggle
+/* -------------------------------------------------------
+   toggleFaq
+------------------------------------------------------- */
 function toggleFaq(btn) {
-    const item = btn.closest('.ig-faq-item');
-    const wasActive = item.classList.contains('active');
-    document.querySelectorAll('.ig-faq-item').forEach(i => i.classList.remove('active'));
+    var item     = btn.closest('.ig-faq-item');
+    var wasActive = item.classList.contains('active');
+    document.querySelectorAll('.ig-faq-item').forEach(function(i) { i.classList.remove('active'); });
     if (!wasActive) item.classList.add('active');
 }
 </script>

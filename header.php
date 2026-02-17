@@ -6,16 +6,45 @@
     <?php 
     // Include Config for dynamic site name
     require_once __DIR__ . '/includes/Config.php';
+    require_once __DIR__ . '/includes/SEOHelper.php';
     $siteName = Config::siteName();
     $baseUrl = Config::baseUrl();
+    
+    // Get current page slug for SEO
+    $current_page_slug = isset($currentPage) ? $currentPage : (isset($page) ? $page : 'home');
+    
+    // Get SEO title
+    $seo_title = SEOHelper::getMetaTitle($current_page_slug, isset($page_title) ? $page_title : $siteName . ': Buy Instagram Followers, Likes & Views | #1 Agency');
     ?>
-    <title><?php echo isset($page_title) ? $page_title : $siteName . ': Buy Instagram Followers, Likes & Views | #1 Agency'; ?></title>
+    <title><?php echo htmlspecialchars($seo_title); ?></title>
+    
+    <!-- SEO Meta Tags -->
+<?php echo SEOHelper::renderMetaTags($current_page_slug, [
+    'title' => isset($page_title) ? $page_title : $siteName . ': Buy Instagram Followers, Likes & Views | #1 Agency',
+    'description' => 'Genuine Socials delivers real Instagram followers, likes & views through ad-backed growth. Trusted since 2017. 24/7 support. Try us today!'
+]); ?>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="<?php echo $baseUrl; ?>favicon.ico">
+    
+    <!-- Preconnect for performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="<?php echo $baseUrl; ?>/css/style.css">
-    <link rel="stylesheet" href="<?php echo $baseUrl; ?>/css/service-pages.css">
-    <link rel="stylesheet" href="<?php echo $baseUrl; ?>/css/mega-menu.css">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="<?php echo $baseUrl; ?>css/style.css">
+    <link rel="stylesheet" href="<?php echo $baseUrl; ?>css/service-pages.css">
+    <link rel="stylesheet" href="<?php echo $baseUrl; ?>css/mega-menu.css">
+    <link rel="stylesheet" href="<?php echo $baseUrl; ?>css/brand.css">
+    
+    <!-- Structured Data (Schema.org) -->
+<?php echo SEOHelper::renderStructuredData($current_page_slug); ?>
+    
+    <!-- Analytics & Tracking -->
+<?php echo SEOHelper::renderAnalytics(); ?>
     
     <!-- Google Translate -->
     <script type="text/javascript">
@@ -81,9 +110,10 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="navbar-inner">
-            <a href="<?php echo $baseUrl; ?>/" class="logo"><?php echo $siteName; ?></a>
+            <a href="<?php echo $baseUrl; ?>" class="logo"><?php echo $siteName; ?></a>
             <div class="nav-right">
             <ul class="nav-links">
+                <li><a href="<?php echo $baseUrl; ?>" aria-label="Home">Home</a></li>
                 <!-- Dynamic Services Mega Menu -->
                 <li class="mega-menu-container">
                     <a href="#" class="mega-menu-trigger" id="servicesMenuTrigger">
@@ -92,11 +122,11 @@
                     <?php error_reporting(E_ALL);ini_set('display_errors', 1);
                     echo generateMegaMenuHTML(); ?>
                 </li>
-                <!-- li><a href="<?php echo $baseUrl; ?>/frequently-asked-questions">FAQ</a></li -->
-                <li><a href="<?php echo $baseUrl; ?>/blog">Blog</a></li>
-                <li><a href="<?php echo $baseUrl; ?>/contact">Contact</a></li>
+                <!-- li><a href="<?php echo $baseUrl; ?>frequently-asked-questions">FAQ</a></li -->
+                <li><a href="<?php echo $baseUrl; ?>blog">Blog</a></li>
+                <li><a href="<?php echo $baseUrl; ?>contact">Contact</a></li>
                 <?php if ($loggedInUser): ?>
-                    <li><a href="<?php echo $baseUrl; ?>/dashboard">Dashboard</a></li>
+                    <li><a href="<?php echo $baseUrl; ?>dashboard">Dashboard</a></li>
                 <?php endif; ?>
             </ul>
             
@@ -123,11 +153,11 @@
                             Welcome ▾
                         </button>
                         <div class="account-menu">
-                            <a href="<?php echo $baseUrl; ?>/dashboard">📊 Dashboard</a>
-                            <a href="<?php echo $baseUrl; ?>/dashboard?section=orders">📦 My Orders</a>
-                            <a href="<?php echo $baseUrl; ?>/dashboard?section=profile">👤 Profile</a>
+                            <a href="<?php echo $baseUrl; ?>dashboard">📊 Dashboard</a>
+                            <a href="<?php echo $baseUrl; ?>dashboard?section=orders">📦 My Orders</a>
+                            <a href="<?php echo $baseUrl; ?>dashboard?section=profile">👤 Profile</a>
                             <div class="menu-divider"></div>
-                            <a href="<?php echo $baseUrl; ?>/logout">🚪 Logout</a>
+                            <a href="<?php echo $baseUrl; ?>logout">🚪 Logout</a>
                         </div>
                     </div>
                 <?php else: ?>
@@ -135,10 +165,10 @@
                     <div class="account-dropdown">
                         <button class="btn btn-outline account-btn">My Account ▾</button>
                         <div class="account-menu">
-                            <a href="<?php echo $baseUrl; ?>/login">🔐 Login</a>
-                            <a href="<?php echo $baseUrl; ?>/register">📝 Register</a>
+                            <a href="<?php echo $baseUrl; ?>login">🔐 Login</a>
+                            <a href="<?php echo $baseUrl; ?>register">📝 Register</a>
                             <div class="menu-divider"></div>
-                            <a href="<?php echo $baseUrl; ?>/contact">💬 Contact Support</a>
+                            <a href="<?php echo $baseUrl; ?>contact">💬 Contact Support</a>
                         </div>
                     </div>
                 <?php endif; ?>
@@ -244,9 +274,12 @@
         });
         
         // User-specific JavaScript
+        // Shared user context
+        let currentUser = null;
+
         <?php if ($loggedInUser): ?>
         // User is logged in - add user-specific JS
-        const currentUser = {
+        currentUser = {
             id: <?php echo $loggedInUser['id']; ?>,
             name: '<?php echo htmlspecialchars($loggedInUser['name'], ENT_QUOTES); ?>',
             email: '<?php echo htmlspecialchars($loggedInUser['email'], ENT_QUOTES); ?>'
@@ -273,8 +306,7 @@
         <?php endif; ?>
         
         <?php else: ?>
-        // Guest user - encourage registration
-        const currentUser = null;
+        // Guest user - encourage registration (currentUser remains null)
         <?php endif; ?>
         
         // Enhanced order form handling for logged-in users

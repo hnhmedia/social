@@ -7,7 +7,7 @@ requireLogin();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo $pageTitle ?? 'Admin Panel'; ?> - SocialIG Admin</title>
+    <title><?php echo $pageTitle ?? 'Admin Panel'; ?> - Genuine Socials Admin</title>
     <link rel="stylesheet" href="css/admin.css">
 </head>
 <body>
@@ -15,13 +15,14 @@ requireLogin();
         <!-- Sidebar -->
         <aside class="admin-sidebar">
             <div class="sidebar-header">
-                <h2>SocialIG Admin</h2>
+                <h2>Genuine Socials Admin</h2>
                 <p>Welcome, <strong><?php echo htmlspecialchars(getAdminName()); ?></strong></p>
                 <p style="font-size: 0.75rem; opacity: 0.7; margin-top: 0.25rem;">
                     @<?php echo htmlspecialchars(getAdminUsername()); ?>
                 </p>
             </div>
             <nav class="sidebar-nav">
+                <?php if (hasFullAccess()): ?>
                 <a href="dashboard.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'dashboard.php' ? 'active' : ''; ?>">
                     <span>📊</span> Dashboard
                 </a>
@@ -46,9 +47,32 @@ requireLogin();
                 <a href="testimonials.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'testimonials.php' ? 'active' : ''; ?>">
                     <span>⭐</span> Testimonials
                 </a>
+                <?php endif; ?>
+                
+                <!-- SEO Manager Section -->
+                <?php if (hasSEOAccess()): ?>
+                <div class="sidebar-section">
+                    <span class="sidebar-section-title">🔍 SEO MANAGER</span>
+                </div>
+                <a href="seo_pages.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'seo_pages.php' ? 'active' : ''; ?>">
+                    <span>📄</span> Page SEO
+                </a>
+                <a href="seo_blog.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'seo_blog.php' ? 'active' : ''; ?>">
+                    <span>📝</span> Blog Posts
+                </a>
+                <a href="seo_technical.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'seo_technical.php' ? 'active' : ''; ?>">
+                    <span>⚙️</span> Technical SEO
+                </a>
+                <a href="seo_settings.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'seo_settings.php' ? 'active' : ''; ?>">
+                    <span>🌐</span> Global Settings
+                </a>
+                <?php endif; ?>
+                
+                <?php if (hasFullAccess()): ?>
                 <a href="admin_users.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'admin_users.php' ? 'active' : ''; ?>">
                     <span>🔐</span> Admin Users
                 </a>
+                <?php endif; ?>
                 <a href="logout.php" class="logout">
                     <span>🚪</span> Logout
                 </a>
@@ -59,5 +83,6 @@ requireLogin();
         <main class="admin-main">
             <header class="admin-header">
                 <h1><?php echo $pageTitle ?? 'Admin Panel'; ?></h1>
+                <a href="/" class="btn-secondary" style="margin-left:auto; text-decoration:none; padding:0.45rem 0.9rem; border-radius:8px;">🏠 Home</a>
             </header>
             <div class="admin-content">

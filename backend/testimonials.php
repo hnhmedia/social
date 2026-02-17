@@ -5,9 +5,15 @@ include 'includes/header.php';
 
 $success = '';
 $error = '';
+$csrfError = false;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+    $error = 'Invalid session. Please refresh and try again.';
+    $csrfError = true;
+}
 
 // Handle Add Testimonial
-if (isset($_POST['add_testimonial'])) {
+if (isset($_POST['add_testimonial']) && !$csrfError) {
     $name = $_POST['name'] ?? '';
     $content = $_POST['content'] ?? '';
     $rating = $_POST['rating'] ?? 5;
@@ -30,7 +36,7 @@ if (isset($_POST['add_testimonial'])) {
 }
 
 // Handle Update Testimonial
-if (isset($_POST['update_testimonial'])) {
+if (isset($_POST['update_testimonial']) && !$csrfError) {
     $id = $_POST['id'] ?? 0;
     $name = $_POST['name'] ?? '';
     $content = $_POST['content'] ?? '';
@@ -52,8 +58,8 @@ if (isset($_POST['update_testimonial'])) {
 }
 
 // Handle Delete Testimonial
-if (isset($_GET['delete'])) {
-    $id = $_GET['delete'];
+if (isset($_POST['delete']) && !$csrfError) {
+    $id = $_POST['delete'];
     if (deleteTestimonial($id)) {
         $success = 'Testimonial deleted successfully!';
     } else {
@@ -158,10 +164,11 @@ if (isset($_GET['edit'])) {
                             </td>
                             <td class="table-actions" style="text-align: right;">
                                 <a href="?edit=<?php echo $testimonial['id']; ?>" class="btn-secondary" style="padding: 0.5rem 0.75rem; font-size: 0.875rem;">Edit</a>
-                                <a href="?delete=<?php echo $testimonial['id']; ?>" 
-                                   class="btn-danger" 
-                                   style="padding: 0.5rem 0.75rem; font-size: 0.875rem;"
-                                   onclick="return confirmDelete('Are you sure you want to delete this testimonial?')">Delete</a>
+                                <form method="POST" action="" style="display: inline;">
+                                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrfToken()); ?>">
+                                    <input type="hidden" name="delete" value="<?php echo $testimonial['id']; ?>">
+                                    <button type="submit" class="btn-danger" style="padding: 0.5rem 0.75rem; font-size: 0.875rem;" onclick="return confirmDelete('Are you sure you want to delete this testimonial?')">Delete</button>
+                                </form>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -186,6 +193,7 @@ if (isset($_GET['edit'])) {
         </div>
         
         <form method="POST" action="">
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrfToken()); ?>">
             <?php if ($editTestimonial): ?>
                 <input type="hidden" name="id" value="<?php echo $editTestimonial['id']; ?>">
             <?php endif; ?>

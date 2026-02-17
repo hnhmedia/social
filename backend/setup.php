@@ -46,7 +46,7 @@ if (isset($_POST['run_setup'])) {
         $defaultUsername = 'admin';
         $defaultPassword = 'admin@123';
         $defaultName = 'Administrator';
-        $defaultEmail = 'admin@socialig.com';
+        $defaultEmail = 'admin@genuinesocials.com';
         
         // Check if admin already exists
         $existingAdmin = $db->where('username', $defaultUsername)->getOne('admin_users');
@@ -79,7 +79,7 @@ if (isset($_POST['run_setup'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel Setup - SocialIG</title>
+    <title>Admin Panel Setup - Genuine Socials</title>
     <link rel="stylesheet" href="css/admin.css">
 </head>
 <body>
@@ -116,7 +116,7 @@ if (isset($_POST['run_setup'])) {
                     <p style="color: #78350f; margin: 0;">
                         <strong>Username:</strong> admin<br>
                         <strong>Password:</strong> admin@123<br>
-                        <strong>Email:</strong> admin@socialig.com
+                        <strong>Email:</strong> admin@genuinesocials.com
                     </p>
                     <p style="color: #78350f; margin-top: 1rem; font-size: 0.875rem;">
                         ⚠️ Change the password after first login!

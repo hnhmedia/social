@@ -5,14 +5,14 @@
                 <div class="footer-brand">
                     <a href="<?php echo Config::baseUrl(); ?>/" class="logo"><?php echo Config::siteName(); ?></a>
                     <p>Established in 2017, <?php echo Config::siteName(); ?> is a marketing agency that delivers ad-based social media services. We prioritize our customers' experiences, and we're confident that you'll be wholly satisfied once you experience our offerings!</p>
-                    <div style="margin-bottom: 1rem;">
+                    <!-- div style="margin-bottom: 1rem;">
                         <p style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 0.5rem;">Newsletter</p>
                         <p style="font-size: 0.8rem; color: #64748b;">Subscribe and get the latest news and promotions from <?php echo Config::siteName(); ?>!</p>
                     </div>
                     <form class="footer-newsletter" action="<?php echo Config::baseUrl('subscribe'); ?>" method="POST">
                         <input type="email" name="email" placeholder="Enter your email" required>
                         <button type="submit">Subscribe</button>
-                    </form>
+                    </form -->
                 </div>
                 <div class="footer-column">
                     <h4>Services</h4>
@@ -22,21 +22,14 @@
                         <li><a href="<?php echo Config::baseUrl('services/buy-instagram-views'); ?>">Buy Instagram Views</a></li>
                         <li><a href="<?php echo Config::baseUrl('services/buy-instagram-reels'); ?>">Buy Reels Likes & Views</a></li>
                         <li><a href="<?php echo Config::baseUrl('services/automatic-likes'); ?>">Automatic Likes</a></li>
-                        <li><a href="<?php echo Config::baseUrl('services/buy-tiktok-followers'); ?>">Buy TikTok Followers</a></li>
-                        <li><a href="<?php echo Config::baseUrl('services/buy-tiktok-likes'); ?>">Buy TikTok Likes</a></li>
-                        <li><a href="<?php echo Config::baseUrl('services/buy-tiktok-views'); ?>">Buy TikTok Views</a></li>
-                        <li><a href="<?php echo Config::baseUrl('services/buy-facebook-post-likes'); ?>">Buy Facebook Post Likes</a></li>
-                        <li><a href="<?php echo Config::baseUrl('services/buy-facebook-page-likes'); ?>">Buy Facebook Page Likes</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
-                    <h4>Free Tools</h4>
+                    <h4>&nbsp;</h4>
                     <ul>
-                        <li><a href="<?php echo Config::baseUrl('free-followers'); ?>">Free Followers</a></li>
-                        <li><a href="<?php echo Config::baseUrl('free-likes'); ?>">Free Likes</a></li>
-                        <li><a href="<?php echo Config::baseUrl('free-views'); ?>">Free Views</a></li>
-                        <li><a href="<?php echo Config::baseUrl('instagram-follower-counter'); ?>">Instagram Follower Counter</a></li>
-                        <li><a href="<?php echo Config::baseUrl('tiktok-counter'); ?>">TikTok Counter</a></li>
+                        <li><a href="<?php echo Config::baseUrl('services/buy-tiktok-followers'); ?>">Buy TikTok Followers</a></li>
+                        <li><a href="<?php echo Config::baseUrl('services/buy-tiktok-likes'); ?>">Buy TikTok Likes</a></li>
+                        <li><a href="<?php echo Config::baseUrl('services/buy-tiktok-views'); ?>">Buy TikTok Views</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
@@ -44,7 +37,7 @@
                     <ul>
                         <li><a href="<?php echo Config::baseUrl('frequently-asked-questions'); ?>">FAQ</a></li>
                         <li><a href="<?php echo Config::baseUrl('blog'); ?>">Blog</a></li>
-                        <li><a href="<?php echo Config::baseUrl('affiliate'); ?>">Affiliate Program</a></li>
+                        <li><a href="<?php echo Config::baseUrl('contact'); ?>">Contact</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
@@ -53,9 +46,7 @@
                         <li><a href="<?php echo Config::baseUrl('about'); ?>"><?php echo Config::siteName(); ?>'s Story</a></li>
                         <li><a href="<?php echo Config::baseUrl('privacy-policy'); ?>">Privacy Policy</a></li>
                         <li><a href="<?php echo Config::baseUrl('terms-of-service'); ?>">Terms of Service</a></li>
-                        <li><a href="<?php echo Config::baseUrl('refund-policy'); ?>">Refund Policy</a></li>
-                        <li><a href="<?php echo Config::baseUrl('cookie-policy'); ?>">Cookie Policy</a></li>
-                    </ul>
+                   </ul>
                 </div>
             </div>
             <div class="footer-bottom">
@@ -67,7 +58,6 @@
                 <div class="footer-social">
                     <a href="https://instagram.com/<?php echo strtolower(Config::siteName()); ?>" target="_blank">📸</a>
                     <a href="https://tiktok.com/@<?php echo strtolower(Config::siteName()); ?>" target="_blank">🎵</a>
-                    <a href="https://facebook.com/<?php echo strtolower(Config::siteName()); ?>" target="_blank">👍</a>
                     <a href="mailto:<?php echo Config::supportEmail(); ?>">✉️</a>
                 </div>
             </div>
@@ -85,5 +75,11 @@
     </footer>
 
     <script src="<?php echo Config::baseUrl('js/main.js'); ?>"></script>
+    
+    <!-- Footer Scripts (Analytics, Chat Widgets, etc.) -->
+<?php 
+require_once __DIR__ . '/includes/SEOHelper.php';
+echo SEOHelper::renderFooterScripts(); 
+?>
 </body>
 </html>

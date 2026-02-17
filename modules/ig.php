@@ -1,7 +1,7 @@
 <?php
 /**
  * Buy Instagram Followers - Service Page
- * Exact replica of Famoid's buy-instagram-followers page layout
+ * Genuine Socials buy-instagram-followers page layout
  */
 
 // Package data for each tab
@@ -40,14 +40,14 @@ $prestigePacks = [
 
 // FAQ data
 $faqItems = [
-    ['q' => 'Why should I buy Instagram followers?', 'a' => 'Purchasing Instagram followers from Famoid boosts your online presence, enhances credibility, and improves brand awareness by expanding your audience and increasing engagement on your posts.'],
-    ['q' => 'Is buying followers on Instagram safe?', 'a' => 'Yes, buying followers from Famoid is safe. We prioritize your account\'s security, employing methods that adhere to Instagram\'s guidelines, and ensuring no compromise on account safety.'],
-    ['q' => 'Will my bought followers engage with my content?', 'a' => 'Famoid strives to provide quality followers that enhance engagement levels. While bought followers inherently have lower interaction rates, they elevate your account\'s credibility, indirectly fostering organic engagement.'],
-    ['q' => 'How quickly will I receive my purchased followers?', 'a' => 'Famoid is renowned for its instant delivery! Once your transaction is complete, your Instagram followers typically begin to increase within minutes, empowering your brand\'s presence swiftly.'],
-    ['q' => 'Will people know I\'ve bought followers?', 'a' => 'No, Famoid ensures a discrete service, providing followers that look authentic. Your purchase details and information are confidential and will not be shared with third parties.'],
-    ['q' => 'Can I lose followers after purchasing?', 'a' => 'Famoid offers a 30-day refill guarantee for any drops in followers after your purchase. Our team diligently works to restore follower counts and maintain your enhanced presence.'],
-    ['q' => 'Is it legal to buy Instagram followers?', 'a' => 'Yes, buying Instagram followers is legal and complies with Instagram\'s terms of service when executed through legitimate practices, like those employed by Famoid.'],
-    ['q' => 'How can Famoid help grow my Instagram?', 'a' => 'Famoid amplifies your Instagram growth by providing authentic-looking followers, improving your account\'s credibility, and attracting organic followers through enhanced visibility and perceived popularity.'],
+    ['q' => 'Why should I buy Instagram followers?', 'a' => 'Purchasing Instagram followers from Genuine Socials boosts your online presence, enhances credibility, and improves brand awareness by expanding your audience and increasing engagement on your posts.'],
+    ['q' => 'Is buying followers on Instagram safe?', 'a' => 'Yes, buying followers from Genuine Socials is safe. We prioritize your account\'s security, employing methods that adhere to Instagram\'s guidelines, and ensuring no compromise on account safety.'],
+    ['q' => 'Will my bought followers engage with my content?', 'a' => 'Genuine Socials focuses on quality followers that enhance engagement levels. While bought followers inherently have lower interaction rates, they elevate your account\'s credibility, indirectly fostering organic engagement.'],
+    ['q' => 'How quickly will I receive my purchased followers?', 'a' => 'Genuine Socials is renowned for swift delivery. Once your transaction is complete, your Instagram followers typically begin to increase within minutes, empowering your brand\'s presence quickly.'],
+    ['q' => 'Will people know I\'ve bought followers?', 'a' => 'No, Genuine Socials keeps your order discreet while providing followers that look authentic. Your purchase details are confidential and will not be shared with third parties.'],
+    ['q' => 'Can I lose followers after purchasing?', 'a' => 'Genuine Socials offers a 30-day refill guarantee for any drops in followers after your purchase. Our team diligently works to restore follower counts and maintain your enhanced presence.'],
+    ['q' => 'Is it legal to buy Instagram followers?', 'a' => 'Yes, buying Instagram followers is legal and complies with Instagram\'s terms of service when executed through legitimate practices, like those employed by Genuine Socials.'],
+    ['q' => 'How can Genuine Socials help grow my Instagram?', 'a' => 'Genuine Socials amplifies your Instagram growth by providing authentic-looking followers, improving your account\'s credibility, and attracting organic followers through enhanced visibility and perceived popularity.'],
     ['q' => 'What type of accounts accepted for this service?', 'a' => 'It must be your own and personal account. With the intent of commercial purposes and use of business accounts not allowed.'],
 ];
 ?>
@@ -56,7 +56,6 @@ $faqItems = [
 /* ===================== */
 /* ORDER WIDGET STYLES   */
 /* ===================== */
-.ig-page-title { text-align: center; margin: 1.5rem 1.25rem; }
 .ig-page-title h1 { font-size: 1.875rem; font-weight: 700; line-height: 1.3; }
 .ig-page-title h1 span { color: #fc481c; }
 .ig-page-title p { font-size: 1.125rem; line-height: 1.6; color: #6b7280; margin: 0; }
@@ -105,7 +104,7 @@ $faqItems = [
 .safe-badge span { font-weight: 500; color: #4b5563; }
 
 /* Tabs */
-.order-widget-inner { max-width: 650px; margin: 0 auto; }
+.order-widget-inner { max-width: 100%; margin: 0; background: transparent; border: none; box-shadow: none; }
 .service-tabs { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; margin-bottom: 1rem; }
 .service-tab {
     position: relative; display: flex; align-items: center; gap: 5px;
@@ -132,14 +131,17 @@ $faqItems = [
 
 /* Package Grid */
 .package-select-grid {
-    display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; padding: 0 5px;
-    max-width: 600px; margin: 0 auto 0.5rem; 
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 0.85rem; padding: 0 5px; max-width: 640px; margin: 0 auto 0.75rem;
+    background: transparent;
 }
 .pkg-card {
-    flex: 1; min-width: 65px; max-width: 80px; position: relative;
+    position: relative;
     background: linear-gradient(135deg, #f8f9fa, #e9ecef); border: 2px solid #dee2e6;
     border-radius: 0.75rem; padding: 0.75rem 0.5rem; text-align: center; cursor: pointer;
     transition: all 0.2s;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    min-height: 120px;
 }
 .pkg-card:hover { border-color: #fc481c; transform: translateY(-2px); }
 .pkg-card.selected {
@@ -412,7 +414,7 @@ $faqItems = [
 <main style="flex: 1;">
 <div class="ig-page-title">
     <h1>Buy Instagram Followers to <span>Accelerate Growth</span> 🔥</h1>
-    <p>Famoid offers the best way to buy real Instagram followers safely and efficiently with just a few clicks.</p>
+    <p>Genuine Socials offers the best way to buy real Instagram followers safely and efficiently with just a few clicks.</p>
 </div>
 
 <!-- ============================================ -->
@@ -422,7 +424,7 @@ $faqItems = [
 <div class="order-main-card" id="order">
     <div style="display: flex; flex-direction: column; gap: 1rem;">
         <div style="width: 100%;">
-            <div style="max-width: 650px; margin: 0 auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+            <div style="max-width: 960px; margin: 0 auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; width: 100%;">
 
                 <!-- Rating Bar -->
                 <div class="rating-bar">
@@ -460,7 +462,7 @@ $faqItems = [
 
                 <!-- Service Tabs -->
                 <div class="order-widget-inner">
-                    <div style="overflow: visible; background: transparent;">
+                    <div style="overflow: visible; background: transparent; width: 100%;">
                         <div style="display: flex; justify-content: center;">
                             <div class="service-tabs">
                                 <button class="service-tab active" onclick="switchTab('real', this)" data-tab="real">
@@ -574,13 +576,13 @@ $faqItems = [
 <!-- ============================================ -->
 <div class="ig-features-section" style="text-align: center;">
     <span class="section-badge">America's #1 Social Media Marketing Agency</span>
-    <h2>Start Your Instagram Growth Right Away with Famoid!</h2>
-    <p>With Famoid, you can easily purchase Instagram services and boost your account naturally through Ads.</p>
+    <h2>Start Your Instagram Growth Right Away with Genuine Socials!</h2>
+    <p>With Genuine Socials, you can easily purchase Instagram services and boost your account naturally through Ads.</p>
     <div class="ig-features-grid">
         <div class="ig-feature-card">
             <div class="icon">😊</div>
             <h3>Satisfaction Guaranteed</h3>
-            <p>Your success is assured with Famoid. We constantly strive to provide the best-in-class service to satisfy our customers.</p>
+            <p>Your success is assured with Genuine Socials. We constantly strive to provide the best-in-class service to satisfy our customers.</p>
         </div>
         <div class="ig-feature-card">
             <div class="icon">📊</div>
@@ -614,10 +616,11 @@ $faqItems = [
                 $testimonials = getFormattedTestimonials();
                 for ($i = 0; $i < 2; $i++) {
                     foreach ($testimonials as $testimonial) {
+                        $avatarId = (abs(crc32($testimonial['name'])) % 70) + 1;
                 ?>
                 <div class="testimonial-card">
                     <div class="testimonial-header">
-                        <img src="https://i.pravatar.cc/96?img=<?php echo $testimonial['img']; ?>" alt="<?php echo $testimonial['name']; ?>" class="testimonial-avatar">
+                        <img src="https://i.pravatar.cc/60?img=<?php echo $avatarId; ?>" alt="<?php echo $testimonial['name']; ?>" class="testimonial-avatar">
                         <div class="testimonial-info">
                             <h4><?php echo $testimonial['name']; ?></h4>
                             <span><?php echo $testimonial['date']; ?></span>
@@ -640,7 +643,7 @@ $faqItems = [
 <!-- ============================================ -->
 <div class="ig-catchy-section">
     <h2>🤔 Why Should You Buy Instagram Followers?</h2>
-    <p>There are lots of reasons to purchase Instagram followers through Famoid, here are some.</p>
+    <p>There are lots of reasons to purchase Instagram followers through Genuine Socials, here are some.</p>
 </div>
 
 <div class="ig-content-section">
@@ -703,7 +706,7 @@ $faqItems = [
                             <p><?php echo htmlspecialchars($faq['a']); ?></p>
                             <span class="verified">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                                Verified by Famoid Team
+                                Verified by Genuine Socials Team
                             </span>
                         </div>
                     </div>
@@ -723,7 +726,7 @@ $faqItems = [
                 </div>
                 <div class="ig-faq-sidebar-body">
                     <h4>Learn More About Instagram Followers</h4>
-                    <p>Browse through our comprehensive FAQ section to understand how Famoid's Instagram Followers service works and how it can benefit your social media growth.</p>
+                    <p>Browse through our comprehensive FAQ section to understand how Genuine Socials' Instagram Followers service works and how it can benefit your social media growth.</p>
                     <div class="ig-faq-sidebar-tip">
                         <div class="tip-label">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 18a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2"/><path d="M12 2a7 7 0 0 0-4 12.9V16h8v-1.1A7 7 0 0 0 12 2z"/></svg>
@@ -749,7 +752,7 @@ $faqItems = [
             <div class="written-by">Written By</div>
             <h3>Jennifer Smith</h3>
             <div class="title">Social Media Marketing Specialist</div>
-            <p class="bio">Jennifer Smith is a writer at Famoid.com specializing in social media and digital marketing. She likes to make complicated things easily understandable for everyone. Her writing expertise includes how-to guides, social media tips and tricks, and digital marketing. When she's not writing, she is either traveling in some part of the world or painting in her house.</p>
+                <p class="bio">Jennifer Smith is a writer at GenuineSocials.com specializing in social media and digital marketing. She likes to make complicated things easily understandable for everyone. Her writing expertise includes how-to guides, social media tips and tricks, and digital marketing. When she's not writing, she is either traveling in some part of the world or painting in her house.</p>
             <div class="ig-author-meta">
                 <div class="meta-item">📄 <span>55 Articles</span></div>
                 <div class="meta-item">🌐 <a href="#" style="color:#0080ff;text-decoration:none;">Website</a></div>
@@ -764,7 +767,7 @@ $faqItems = [
 <!-- ============================================ -->
 <div class="ig-howto-section">
     <h2>How to Buy Instagram Followers</h2>
-    <p>Follow the steps shown below to <b>complete your purchase quickly</b> at Famoid!</p>
+    <p>Follow the steps shown below to <b>complete your purchase quickly</b> at Genuine Socials!</p>
 </div>
 <div style="width:100%;background:#f1f3f5;">
     <div class="ig-howto-steps" style="max-width:1300px;margin:0 auto;padding:1rem 1.25rem 2rem;">

@@ -5,9 +5,15 @@ include 'includes/header.php';
 
 $success = '';
 $error = '';
+$csrfError = false;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+    $error = 'Invalid session. Please refresh and try again.';
+    $csrfError = true;
+}
 
 // Handle Add FAQ
-if (isset($_POST['add_faq'])) {
+if (isset($_POST['add_faq']) && !$csrfError) {
     $question = $_POST['question'] ?? '';
     $answer = $_POST['answer'] ?? '';
     $category = $_POST['category'] ?? 'general';
@@ -27,7 +33,7 @@ if (isset($_POST['add_faq'])) {
 }
 
 // Handle Update FAQ
-if (isset($_POST['update_faq'])) {
+if (isset($_POST['update_faq']) && !$csrfError) {
     $id = $_POST['id'] ?? 0;
     $question = $_POST['question'] ?? '';
     $answer = $_POST['answer'] ?? '';
@@ -46,8 +52,8 @@ if (isset($_POST['update_faq'])) {
 }
 
 // Handle Delete FAQ
-if (isset($_GET['delete'])) {
-    $id = $_GET['delete'];
+if (isset($_POST['delete']) && !$csrfError) {
+    $id = $_POST['delete'];
     if (deleteFaq($id)) {
         $success = 'FAQ deleted successfully!';
     } else {
@@ -122,9 +128,11 @@ $existingCategories = getFaqCategories();
                         </td>
                         <td class="table-actions">
                             <a href="?edit=<?php echo $faq['id']; ?>" class="btn-secondary">Edit</a>
-                            <a href="?delete=<?php echo $faq['id']; ?>" 
-                               class="btn-danger" 
-                               onclick="return confirmDelete('Are you sure you want to delete this FAQ?')">Delete</a>
+                            <form method="POST" action="" style="display: inline;">
+                                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrfToken()); ?>">
+                                <input type="hidden" name="delete" value="<?php echo $faq['id']; ?>">
+                                <button type="submit" class="btn-danger" onclick="return confirmDelete('Are you sure you want to delete this FAQ?')">Delete</button>
+                            </form>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -148,6 +156,7 @@ $existingCategories = getFaqCategories();
         </div>
         
         <form method="POST" action="">
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrfToken()); ?>">
             <?php if ($editFaq): ?>
                 <input type="hidden" name="id" value="<?php echo $editFaq['id']; ?>">
             <?php endif; ?>

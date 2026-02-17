@@ -1,0 +1,33 @@
+version: "3.9"
+services:
+  web:
+    build: .
+    ports:
+      - "8000:80"
+    environment:
+      APP_ENV: local
+      APP_BASE_URL: http://localhost:8000/
+      DB_HOST: db
+      DB_USER: root
+      DB_PASS: ""
+      DB_NAME: admin_sgmlocal
+      DB_PORT: 3306
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: admin_sgmlocal
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./admin_sgmlocal.sql:/docker-entrypoint-initdb.d/admin_sgmlocal.sql:ro
+    ports:
+      - "3307:3306"
+
+volumes:
+  mysql-data:

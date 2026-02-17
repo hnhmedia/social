@@ -88,7 +88,7 @@ if (isset($_SESSION['register_success'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - SocialIG</title>
+    <title>Login - Genuine Socials</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
@@ -308,7 +308,7 @@ if (isset($_SESSION['register_success'])) {
 <body>
     <div class="login-container">
         <div class="login-header">
-            <div class="logo">SocialIG</div>
+            <div class="logo">Genuine Socials</div>
             <div class="logo-subtitle">Welcome back! Sign in to your account</div>
         </div>
         

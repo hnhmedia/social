@@ -1,13 +1,39 @@
-<?php error_reporting(E_ALL); ini_set('display_errors', 1); 
+<?php 
 $pageTitle = 'Service Packages';
 require_once 'includes/db.php';
 include 'includes/header.php';
 
 $success = '';
 $error = '';
+$csrfError = false;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+    $error = 'Invalid session. Please refresh and try again.';
+    $csrfError = true;
+}
+
+// Inline quick update (status/order/popular)
+if (isset($_POST['quick_update']) && !$csrfError) {
+    $id = (int)($_POST['id'] ?? 0);
+    if ($id) {
+        $data = [];
+        if (isset($_POST['display_order'])) {
+            $data['display_order'] = (int)$_POST['display_order'];
+        }
+        $data['is_active'] = isset($_POST['is_active']) ? 1 : 0;
+        $data['is_popular'] = isset($_POST['is_popular']) ? 1 : 0;
+        if (updateServicePackageInline($id, $data)) {
+            $success = 'Package updated';
+        } else {
+            $error = 'Nothing to update or failed to save package.';
+        }
+    } else {
+        $error = 'Missing package ID.';
+    }
+}
 
 // Handle Add Package
-if (isset($_POST['add_package'])) {
+if (isset($_POST['add_package']) && !$csrfError) {
     $package_code = $_POST['package_code'] ?? null;
     $service_id = $_POST['service_id'] ?? 0;
     $tag_id = $_POST['tag_id'] ?? null;
@@ -17,9 +43,19 @@ if (isset($_POST['add_package'])) {
     $discount_label = $_POST['discount_label'] ?? null;
     $is_popular = isset($_POST['is_popular']) ? 1 : 0;
     $display_order = $_POST['display_order'] ?? 0;
-    $is_active = isset($_POST['is_active']) ? 1 : 1;
+    $is_active = isset($_POST['is_active']) ? 1 : 0;
     
     if ($service_id && $quantity && $price) {
+        // Optional: enforce unique package_code if provided
+        if ($package_code) {
+            $existing = $db->where('package_code', $package_code)->getOne('service_packages');
+            if ($existing) {
+                $error = 'Package code already exists. Please use a unique code.';
+            }
+        }
+    }
+
+    if (!$error && $service_id && $quantity && $price) {
         $data = [
             'package_code' => $package_code,
             'service_id' => $service_id,
@@ -44,7 +80,7 @@ if (isset($_POST['add_package'])) {
 }
 
 // Handle Update Package
-if (isset($_POST['update_package'])) {
+if (isset($_POST['update_package']) && !$csrfError) {
     $id = $_POST['id'] ?? 0;
     $package_code = $_POST['package_code'] ?? null;
     $service_id = $_POST['service_id'] ?? 0;
@@ -58,6 +94,15 @@ if (isset($_POST['update_package'])) {
     $is_active = isset($_POST['is_active']) ? 1 : 0;
     
     if ($id && $service_id && $quantity && $price) {
+        if ($package_code) {
+            $existing = $db->where('package_code', $package_code)->where('id', $id, '!=')->getOne('service_packages');
+            if ($existing) {
+                $error = 'Package code already exists. Please use a unique code.';
+            }
+        }
+    }
+
+    if (!$error && $id && $service_id && $quantity && $price) {
         $data = [
             'package_code' => $package_code,
             'service_id' => $service_id,
@@ -80,8 +125,8 @@ if (isset($_POST['update_package'])) {
 }
 
 // Handle Delete Package
-if (isset($_GET['delete'])) {
-    $id = $_GET['delete'];
+if (isset($_POST['delete']) && !$csrfError) {
+    $id = $_POST['delete'];
     if (deleteServicePackage($id)) {
         $success = 'Package deleted successfully!';
     } else {
@@ -89,15 +134,20 @@ if (isset($_GET['delete'])) {
     }
 }
 
-// Get filter
+// Filters
 $filter_service = $_GET['service'] ?? 'all';
+$filter_tag = $_GET['tag'] ?? '';
+$filter_status = $_GET['status'] ?? '';
+$filter_popular = $_GET['popular'] ?? '';
+$filter_q = trim($_GET['q'] ?? '');
 
-// Get all packages
-if ($filter_service !== 'all') {
-    $packages = getPackagesByService($filter_service);
-} else {
-    $packages = getAllServicePackages();
-}
+$packages = getPackagesFiltered([
+    'service_id' => $filter_service !== 'all' ? $filter_service : '',
+    'tag_id' => $filter_tag !== '' ? $filter_tag : '',
+    'is_active' => $filter_status === 'active' ? 1 : ($filter_status === 'inactive' ? 0 : ''),
+    'is_popular' => $filter_popular === '1' ? 1 : ($filter_popular === '0' ? 0 : ''),
+    'q' => $filter_q
+]);
 
 // Get services for dropdown
 $services = getAllServices();
@@ -114,27 +164,49 @@ if (isset($_GET['edit'])) {
 ?>
 
 <?php if ($success): ?>
-    <div class="alert alert-success"><?php echo htmlspecialchars($success); ?></div>
+    <div class="alert alert-success"><?php echo ($success); ?></div>
 <?php endif; ?>
 
 <?php if ($error): ?>
-    <div class="alert alert-error"><?php echo htmlspecialchars($error); ?></div>
+    <div class="alert alert-error"><?php echo ($error); ?></div>
 <?php endif; ?>
 
 <div class="table-container">
     <div class="table-header">
         <h2>Manage Service Packages (<?php echo count($packages); ?>)</h2>
-        <div style="display: flex; gap: 1rem; align-items: center;">
-            <select onchange="window.location.href='?service='+this.value" style="padding: 0.625rem 1rem; border: 2px solid #e2e8f0; border-radius: 10px;">
+        <form method="GET" action="" style="display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center;">
+            <input type="text" name="q" value="<?php echo htmlspecialchars($filter_q); ?>" placeholder="Search code, label" 
+                   style="padding: 0.625rem 0.85rem; border: 2px solid #e2e8f0; border-radius: 10px; min-width: 200px;">
+            <select name="service" style="padding: 0.625rem 1rem; border: 2px solid #e2e8f0; border-radius: 10px;">
                 <option value="all" <?php echo $filter_service === 'all' ? 'selected' : ''; ?>>All Services</option>
                 <?php foreach ($activeServices as $service): ?>
                     <option value="<?php echo $service['id']; ?>" <?php echo $filter_service == $service['id'] ? 'selected' : ''; ?>>
-                        <?php echo htmlspecialchars($service['name']); ?>
+                        <?php echo ($service['name']); ?>
                     </option>
                 <?php endforeach; ?>
             </select>
-            <button class="btn-primary" onclick="showModal('addPackageModal')">+ Add Package</button>
-        </div>
+            <select name="tag" style="padding: 0.625rem 1rem; border: 2px solid #e2e8f0; border-radius: 10px;">
+                <option value="">All Tags</option>
+                <?php foreach ($tags as $tag): ?>
+                    <option value="<?php echo $tag['id']; ?>" <?php echo $filter_tag == $tag['id'] ? 'selected' : ''; ?>>
+                        <?php echo ($tag['tag_name']); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+            <select name="status" style="padding: 0.625rem 1rem; border: 2px solid #e2e8f0; border-radius: 10px;">
+                <option value="">All Status</option>
+                <option value="active" <?php echo $filter_status === 'active' ? 'selected' : ''; ?>>Active</option>
+                <option value="inactive" <?php echo $filter_status === 'inactive' ? 'selected' : ''; ?>>Inactive</option>
+            </select>
+            <select name="popular" style="padding: 0.625rem 1rem; border: 2px solid #e2e8f0; border-radius: 10px;">
+                <option value="">Popular & All</option>
+                <option value="1" <?php echo $filter_popular === '1' ? 'selected' : ''; ?>>Popular only</option>
+                <option value="0" <?php echo $filter_popular === '0' ? 'selected' : ''; ?>>Not popular</option>
+            </select>
+            <button type="submit" class="btn-secondary" style="padding: 0.6rem 1rem;">Filter</button>
+            <a href="packages.php" class="btn-secondary" style="padding: 0.6rem 1rem; text-decoration: none;">Reset</a>
+            <button class="btn-primary" type="button" onclick="showModal('addPackageModal')">+ Add Package</button>
+        </form>
     </div>
     
     <?php if (count($packages) > 0): ?>
@@ -145,11 +217,13 @@ if (isset($_GET['edit'])) {
                         <th style="width: 50px;">ID</th>
                         <th style="width: 100px;">Code</th>
                         <th style="min-width: 200px;">Service</th>
+                        <th style="width: 110px;">Tag</th>
                         <th style="width: 100px; text-align: right;">Quantity</th>
                         <th style="width: 100px; text-align: right;">Price</th>
                         <th style="width: 120px;">Discount</th>
                         <th style="width: 80px; text-align: center;">Status</th>
-                        <th style="width: 180px; text-align: right;">Actions</th>
+                        <th style="width: 200px; text-align: center;">Quick Update</th>
+                        <th style="width: 160px; text-align: right;">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -170,7 +244,7 @@ if (isset($_GET['edit'])) {
                             $currentService = $package['service_id'];
                     ?>
                         <tr style="background: #f8fafc;">
-                            <td colspan="8" style="font-weight: 600; color: #1e293b; padding: 0.75rem 1rem;">
+                            <td colspan="10" style="font-weight: 600; color: #1e293b; padding: 0.75rem 1rem;">
                                 📦 <?php echo htmlspecialchars($serviceName); ?>
                             </td>
                         </tr>
@@ -183,31 +257,31 @@ if (isset($_GET['edit'])) {
                                 </code>
                             </td>
                             <td>
-                                <?php if ($filter_service !== 'all'): ?>
-                                    <?php 
-                                    // Get tag name
-                                    $tagName = '';
-                                    if ($package['tag_id']) {
-                                        foreach ($tags as $tag) {
-                                            if ($tag['id'] == $package['tag_id']) {
-                                                $tagName = $tag['name'];
-                                                break;
-                                            }
+                                <div style="font-weight: 500; color: #1e293b;">
+                                    <?php echo htmlspecialchars($serviceName); ?>
+                                </div>
+                                <?php if ($package['is_popular']): ?>
+                                    <span style="color: #f59e0b; font-size: 0.875rem;">⭐ Popular</span>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <?php 
+                                $tagName = '';
+                                if ($package['tag_id']) {
+                                    foreach ($tags as $tag) {
+                                        if ($tag['id'] == $package['tag_id']) {
+                                            $tagName = $tag['tag_name'];
+                                            break;
                                         }
                                     }
-                                    ?>
-                                    <?php if ($tagName): ?>
-                                        <span class="badge badge-info" style="font-size: 0.75rem;">
-                                            <?php echo htmlspecialchars($tagName); ?>
-                                        </span>
-                                    <?php endif; ?>
+                                }
+                                ?>
+                                <?php if ($tagName): ?>
+                                    <span class="badge badge-info" style="font-size: 0.75rem;">
+                                        <?php echo htmlspecialchars($tagName); ?>
+                                    </span>
                                 <?php else: ?>
-                                    <div style="font-weight: 500; color: #1e293b;">
-                                        <?php echo htmlspecialchars($serviceName); ?>
-                                    </div>
-                                <?php endif; ?>
-                                <?php if ($package['is_popular']): ?>
-                                    <span style="color: #f59e0b; font-size: 0.875rem; margin-left: 0.5rem;">⭐ Popular</span>
+                                    <span style="color: #cbd5e1;">—</span>
                                 <?php endif; ?>
                             </td>
                             <td style="text-align: right;">
@@ -228,7 +302,7 @@ if (isset($_GET['edit'])) {
                             <td>
                                 <?php if ($package['discount_label']): ?>
                                     <span class="badge" style="background: #fef3c7; color: #92400e; font-size: 0.75rem; font-weight: 600;">
-                                        <?php echo htmlspecialchars($package['discount_label']); ?>
+                                        <?php echo ($package['discount_label']); ?>
                                     </span>
                                 <?php else: ?>
                                     <span style="color: #cbd5e1;">—</span>
@@ -241,13 +315,32 @@ if (isset($_GET['edit'])) {
                                     <span class="badge badge-warning" style="font-size: 0.75rem;">Inactive</span>
                                 <?php endif; ?>
                             </td>
+                            <td style="text-align: center;">
+                                <form method="POST" action="" style="display: inline-flex; gap: 0.4rem; align-items: center; flex-wrap: wrap; justify-content: center;">
+                                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrfToken()); ?>">
+                                    <input type="hidden" name="quick_update" value="1">
+                                    <input type="hidden" name="id" value="<?php echo $package['id']; ?>">
+                                    <input type="number" name="display_order" value="<?php echo (int)$package['display_order']; ?>" min="0" 
+                                           style="width: 70px; padding: 0.35rem 0.4rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem;">
+                                    <label style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.82rem; color: #475569;">
+                                        <input type="checkbox" name="is_active" <?php echo $package['is_active'] ? 'checked' : ''; ?> style="width: auto;">
+                                        Active
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.82rem; color: #475569;">
+                                        <input type="checkbox" name="is_popular" <?php echo $package['is_popular'] ? 'checked' : ''; ?> style="width: auto;">
+                                        Popular
+                                    </label>
+                                    <button type="submit" class="btn-secondary" style="padding: 0.35rem 0.7rem; font-size: 0.85rem;">Save</button>
+                                </form>
+                            </td>
                             <td class="table-actions" style="text-align: right;">
                                 <a href="?edit=<?php echo $package['id']; ?><?php echo $filter_service !== 'all' ? '&service='.$filter_service : ''; ?>" 
                                    class="btn-secondary" style="padding: 0.5rem 0.75rem; font-size: 0.875rem;">Edit</a>
-                                <a href="?delete=<?php echo $package['id']; ?><?php echo $filter_service !== 'all' ? '&service='.$filter_service : ''; ?>" 
-                                   class="btn-danger" 
-                                   style="padding: 0.5rem 0.75rem; font-size: 0.875rem;"
-                                   onclick="return confirmDelete('Are you sure you want to delete this package?')">Delete</a>
+                                <form method="POST" action="" style="display: inline;">
+                                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrfToken()); ?>">
+                                    <input type="hidden" name="delete" value="<?php echo $package['id']; ?>">
+                                    <button type="submit" class="btn-danger" style="padding: 0.5rem 0.75rem; font-size: 0.875rem;" onclick="return confirmDelete('Are you sure you want to delete this package?')">Delete</button>
+                                </form>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -272,6 +365,7 @@ if (isset($_GET['edit'])) {
         </div>
         
         <form method="POST" action="">
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrfToken()); ?>">
             <?php if ($editPackage): ?>
                 <input type="hidden" name="id" value="<?php echo $editPackage['id']; ?>">
             <?php endif; ?>
@@ -283,7 +377,7 @@ if (isset($_GET['edit'])) {
                     <?php foreach ($activeServices as $service): ?>
                         <option value="<?php echo $service['id']; ?>" 
                                 <?php echo ($editPackage && $editPackage['service_id'] == $service['id']) ? 'selected' : ''; ?>>
-                            <?php echo htmlspecialchars($service['name']); ?>
+                            <?php echo ($service['name']); ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
@@ -296,7 +390,7 @@ if (isset($_GET['edit'])) {
                     <?php foreach ($tags as $tag): ?>
                         <option value="<?php echo $tag['id']; ?>" 
                                 <?php echo ($editPackage && $editPackage['tag_id'] == $tag['id']) ? 'selected' : ''; ?>>
-                            <?php echo htmlspecialchars($tag['name']); ?>
+                            <?php echo ($tag['tag_name']); ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
@@ -307,7 +401,7 @@ if (isset($_GET['edit'])) {
                 <div class="form-group">
                     <label for="package_code">Package Code</label>
                     <input type="text" id="package_code" name="package_code" 
-                           value="<?php echo $editPackage ? htmlspecialchars($editPackage['package_code']) : ''; ?>" 
+                           value="<?php echo $editPackage ? ($editPackage['package_code']) : ''; ?>" 
                            maxlength="20"
                            placeholder="e.g., 1IGF">
                     <small style="color: #64748b; font-size: 0.875rem;">Unique identifier</small>
@@ -345,7 +439,7 @@ if (isset($_GET['edit'])) {
                 <div class="form-group">
                     <label for="discount_label">Discount Label</label>
                     <input type="text" id="discount_label" name="discount_label" 
-                           value="<?php echo $editPackage ? htmlspecialchars($editPackage['discount_label']) : ''; ?>" 
+                           value="<?php echo $editPackage ? ($editPackage['discount_label']) : ''; ?>" 
                            maxlength="50"
                            placeholder="40% Off, /month, Premium">
                 </div>

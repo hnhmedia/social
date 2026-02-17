@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo isset($page_title) ? $page_title : 'Famoid: Buy Instagram Followers, Likes & Views | #1 Agency'; ?></title>
+    <title><?php echo isset($page_title) ? $page_title : 'Genuine Socials: Buy Instagram Followers, Likes & Views | #1 Agency'; ?></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -32,7 +32,7 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="navbar-inner">
-            <a href="index.php" class="logo">Famoid</a>
+            <a href="index.php" class="logo">Genuine Socials</a>
             <ul class="nav-links">
                 <li><a href="index.php#services">Services</a></li>
                 <li><a href="index.php#faq">FAQ</a></li>
@@ -97,9 +97,12 @@
     
     <script>
         // Add some JavaScript for user-specific functionality
+        // Shared user context
+        let currentUser = null;
+
         <?php if ($loggedInUser): ?>
         // User is logged in - add user-specific JS
-        const currentUser = {
+        currentUser = {
             id: <?php echo $loggedInUser['id']; ?>,
             name: '<?php echo htmlspecialchars($loggedInUser['name'], ENT_QUOTES); ?>',
             email: '<?php echo htmlspecialchars($loggedInUser['email'], ENT_QUOTES); ?>'
@@ -120,14 +123,13 @@
         // Example: Show welcome message for new users
         <?php if (isset($_SESSION['just_registered'])): ?>
         setTimeout(() => {
-            alert('Welcome to Famoid, <?php echo htmlspecialchars($loggedInUser['name']); ?>! Your account has been created successfully.');
+            alert('Welcome to Genuine Socials, <?php echo htmlspecialchars($loggedInUser['name']); ?>! Your account has been created successfully.');
         }, 1000);
         <?php unset($_SESSION['just_registered']); ?>
         <?php endif; ?>
         
         <?php else: ?>
-        // Guest user - encourage registration
-        const currentUser = null;
+        // Guest user - encourage registration (currentUser remains null)
         <?php endif; ?>
         
         // Enhanced order form handling for logged-in users

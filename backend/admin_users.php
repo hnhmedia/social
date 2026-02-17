@@ -1,13 +1,21 @@
 <?php
 $pageTitle = 'Admin Users';
 require_once 'includes/db.php';
+require_once 'includes/auth.php';
+requireRole(['admin','super_admin']);
 include 'includes/header.php';
 
 $success = '';
 $error = '';
+$csrfError = false;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+    $error = 'Invalid session. Please refresh and try again.';
+    $csrfError = true;
+}
 
 // Handle Add Admin User
-if (isset($_POST['add_admin'])) {
+if (isset($_POST['add_admin']) && !$csrfError) {
     $username = $_POST['username'] ?? '';
     $password = $_POST['password'] ?? '';
     $name = $_POST['name'] ?? '';
@@ -32,7 +40,7 @@ if (isset($_POST['add_admin'])) {
 }
 
 // Handle Update Admin User
-if (isset($_POST['update_admin'])) {
+if (isset($_POST['update_admin']) && !$csrfError) {
     $id = $_POST['id'] ?? 0;
     $name = $_POST['name'] ?? '';
     $email = $_POST['email'] ?? '';
@@ -54,7 +62,7 @@ if (isset($_POST['update_admin'])) {
 }
 
 // Handle Change Password
-if (isset($_POST['change_password'])) {
+if (isset($_POST['change_password']) && !$csrfError) {
     $id = $_POST['id'] ?? 0;
     $new_password = $_POST['new_password'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
@@ -75,9 +83,9 @@ if (isset($_POST['change_password'])) {
 }
 
 // Handle Delete Admin User
-if (isset($_GET['delete'])) {
-    $id = $_GET['delete'];
-    
+if (isset($_POST['delete']) && !$csrfError) {
+    $id = $_POST['delete'];
+
     // Don't allow deleting yourself
     if ($id == getAdminId()) {
         $error = 'You cannot delete your own account!';
@@ -144,13 +152,15 @@ if (isset($_GET['change_password'])) {
                                 <span class="badge" style="background: #7c3aed; color: white; margin-left: 0.5rem;">You</span>
                             <?php endif; ?>
                         </td>
-                        <td><?php echo htmlspecialchars($admin['name']); ?></td>
-                        <td><?php echo htmlspecialchars($admin['email']); ?></td>
+                        <td><?php echo htmlspecialchars($admin['name'] ?? ''); ?></td>
+                        <td><?php echo htmlspecialchars($admin['email'] ?? ''); ?></td>
                         <td>
                             <?php if ($admin['role'] == 'super_admin'): ?>
-                                <span class="badge" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">Super Admin</span>
+                                <span class="badge" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">👑 Super Admin</span>
+                            <?php elseif ($admin['role'] == 'seo_manager'): ?>
+                                <span class="badge" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white;">🔍 SEO Manager</span>
                             <?php else: ?>
-                                <span class="badge badge-info">Admin</span>
+                                <span class="badge badge-info">🔧 Admin</span>
                             <?php endif; ?>
                         </td>
                         <td>
@@ -171,9 +181,11 @@ if (isset($_GET['change_password'])) {
                             <a href="?edit=<?php echo $admin['id']; ?>" class="btn-secondary">Edit</a>
                             <a href="?change_password=<?php echo $admin['id']; ?>" class="btn-secondary">Password</a>
                             <?php if ($admin['id'] != getAdminId()): ?>
-                                <a href="?delete=<?php echo $admin['id']; ?>" 
-                                   class="btn-danger" 
-                                   onclick="return confirmDelete('Are you sure you want to delete this admin user?')">Delete</a>
+                                <form method="POST" action="" style="display: inline;">
+                                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrfToken()); ?>">
+                                    <input type="hidden" name="delete" value="<?php echo $admin['id']; ?>">
+                                    <button type="submit" class="btn-danger" onclick="return confirmDelete('Are you sure you want to delete this admin user?')">Delete</button>
+                                </form>
                             <?php endif; ?>
                         </td>
                     </tr>
@@ -198,6 +210,7 @@ if (isset($_GET['change_password'])) {
         </div>
         
         <form method="POST" action="">
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrfToken()); ?>">
             <div class="form-group">
                 <label for="username">Username *</label>
                 <input type="text" id="username" name="username" required maxlength="50" placeholder="admin123">
@@ -223,10 +236,11 @@ if (isset($_GET['change_password'])) {
             <div class="form-group">
                 <label for="role">Role *</label>
                 <select id="role" name="role" required style="width: 100%; padding: 0.875rem; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem;">
-                    <option value="admin">Admin</option>
-                    <option value="super_admin">Super Admin</option>
+                    <option value="admin">Admin (Full Access)</option>
+                    <option value="super_admin">Super Admin (Full Access)</option>
+                    <option value="seo_manager">SEO Manager (SEO Tools Only)</option>
                 </select>
-                <small style="color: #64748b; font-size: 0.875rem;">Super Admin has full access</small>
+                <small style="color: #64748b; font-size: 0.875rem;">SEO Manager can only access SEO sections, not orders/users/services</small>
             </div>
             
             <button type="submit" name="add_admin" class="btn">Create Admin User</button>
@@ -244,6 +258,7 @@ if (isset($_GET['change_password'])) {
         
         <?php if ($editAdmin): ?>
         <form method="POST" action="">
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrfToken()); ?>">
             <input type="hidden" name="id" value="<?php echo $editAdmin['id']; ?>">
             
             <div class="form-group">
@@ -265,8 +280,9 @@ if (isset($_GET['change_password'])) {
             <div class="form-group">
                 <label for="edit_role">Role *</label>
                 <select id="edit_role" name="role" required style="width: 100%; padding: 0.875rem; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem;">
-                    <option value="admin" <?php echo $editAdmin['role'] == 'admin' ? 'selected' : ''; ?>>Admin</option>
-                    <option value="super_admin" <?php echo $editAdmin['role'] == 'super_admin' ? 'selected' : ''; ?>>Super Admin</option>
+                    <option value="admin" <?php echo $editAdmin['role'] == 'admin' ? 'selected' : ''; ?>>Admin (Full Access)</option>
+                    <option value="super_admin" <?php echo $editAdmin['role'] == 'super_admin' ? 'selected' : ''; ?>>Super Admin (Full Access)</option>
+                    <option value="seo_manager" <?php echo $editAdmin['role'] == 'seo_manager' ? 'selected' : ''; ?>>SEO Manager (SEO Tools Only)</option>
                 </select>
             </div>
             
@@ -297,6 +313,7 @@ if (isset($_GET['change_password'])) {
         
         <?php if ($changePasswordAdmin): ?>
         <form method="POST" action="">
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrfToken()); ?>">
             <input type="hidden" name="id" value="<?php echo $changePasswordAdmin['id']; ?>">
             
             <div style="background: #f8fafc; padding: 1rem; border-radius: 10px; margin-bottom: 1.5rem;">

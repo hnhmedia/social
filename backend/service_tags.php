@@ -5,9 +5,15 @@ include 'includes/header.php';
 
 $success = '';
 $error = '';
+$csrfError = false;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+    $error = 'Invalid session. Please refresh and try again.';
+    $csrfError = true;
+}
 
 // Handle Add Service Tag
-if (isset($_POST['add_tag'])) {
+if (isset($_POST['add_tag']) && !$csrfError) {
     $service_id = $_POST['service_id'] ?? 0;
     $tag_name = $_POST['tag_name'] ?? '';
     $tag_slug = $_POST['tag_slug'] ?? '';
@@ -19,6 +25,13 @@ if (isset($_POST['add_tag'])) {
     $is_active = isset($_POST['is_active']) ? 1 : 0;
     
     if ($service_id && $tag_name && $tag_slug) {
+        $existing = $db->where('tag_slug', $tag_slug)->getOne('service_tags');
+        if ($existing) {
+            $error = 'Tag slug already exists. Please use a unique slug.';
+        }
+    }
+
+    if (!$error && $service_id && $tag_name && $tag_slug) {
         $data = [
             'service_id' => $service_id,
             'tag_name' => $tag_name,
@@ -42,7 +55,7 @@ if (isset($_POST['add_tag'])) {
 }
 
 // Handle Update Service Tag
-if (isset($_POST['update_tag'])) {
+if (isset($_POST['update_tag']) && !$csrfError) {
     $id = $_POST['id'] ?? 0;
     $service_id = $_POST['service_id'] ?? 0;
     $tag_name = $_POST['tag_name'] ?? '';
@@ -55,6 +68,13 @@ if (isset($_POST['update_tag'])) {
     $is_active = isset($_POST['is_active']) ? 1 : 0;
     
     if ($id && $service_id && $tag_name && $tag_slug) {
+        $existing = $db->where('tag_slug', $tag_slug)->where('id', $id, '!=')->getOne('service_tags');
+        if ($existing) {
+            $error = 'Tag slug already exists. Please use a unique slug.';
+        }
+    }
+
+    if (!$error && $id && $service_id && $tag_name && $tag_slug) {
         $data = [
             'service_id' => $service_id,
             'tag_name' => $tag_name,
@@ -76,8 +96,8 @@ if (isset($_POST['update_tag'])) {
 }
 
 // Handle Delete Service Tag
-if (isset($_GET['delete'])) {
-    $id = $_GET['delete'];
+if (isset($_POST['delete']) && !$csrfError) {
+    $id = $_POST['delete'];
     if (deleteServiceTag($id)) {
         $success = 'Service tag deleted successfully!';
     } else {
@@ -192,10 +212,11 @@ foreach ($tags as $tag) {
                             </td>
                             <td class="table-actions" style="text-align: right;">
                                 <a href="?edit=<?php echo $tag['id']; ?>" class="btn-secondary" style="padding: 0.5rem 0.75rem; font-size: 0.875rem;">Edit</a>
-                                <a href="?delete=<?php echo $tag['id']; ?>" 
-                                   class="btn-danger" 
-                                   style="padding: 0.5rem 0.75rem; font-size: 0.875rem;"
-                                   onclick="return confirmDelete('Are you sure you want to delete this tag?')">Delete</a>
+                                <form method="POST" action="" style="display: inline;">
+                                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrfToken()); ?>">
+                                    <input type="hidden" name="delete" value="<?php echo $tag['id']; ?>">
+                                    <button type="submit" class="btn-danger" style="padding: 0.5rem 0.75rem; font-size: 0.875rem;" onclick="return confirmDelete('Are you sure you want to delete this tag?')">Delete</button>
+                                </form>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -220,6 +241,7 @@ foreach ($tags as $tag) {
         </div>
         
         <form method="POST" action="">
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrfToken()); ?>">
             <?php if ($editTag): ?>
                 <input type="hidden" name="id" value="<?php echo $editTag['id']; ?>">
             <?php endif; ?>

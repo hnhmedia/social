@@ -57,7 +57,7 @@ $trustBarFeatures = $firstTag && !empty($firstTag['features']) ? $firstTag['feat
 <div class="order-main-card" id="order">
     <div style="display: flex; flex-direction: column; gap: 1rem;">
         <div style="width: 100%;">
-            <div style="max-width: 650px; margin: 0 auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+            <div style="max-width: 960px; width: 100%; margin: 0 auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
 
                 <!-- Rating Bar -->
                 <div class="rating-bar">
@@ -84,7 +84,7 @@ $trustBarFeatures = $firstTag && !empty($firstTag['features']) ? $firstTag['feat
                 <!-- Service Tabs -->
                 <?php if (!empty($serviceTags)): ?>
                 <div class="order-widget-inner">
-                    <div style="overflow: visible; background: transparent;">
+                    <div style="overflow: visible; background: transparent; width: 100%;">
                         <div style="display: flex; justify-content: center;">
                             <div class="service-tabs">
                                 <?php foreach($serviceTags as $index => $tag): ?>
@@ -181,14 +181,14 @@ $trustBarFeatures = $firstTag && !empty($firstTag['features']) ? $firstTag['feat
 
 <!-- FEATURES SECTION -->
 <div class="ig-features-section" style="text-align: center;">
-    <span class="section-badge">America's #1 Social Media Marketing Agency</span>
-    <h2>Start Your Growth Right Away with Famoid!</h2>
-    <p>With Famoid, you can easily purchase services and boost your account naturally through Ads.</p>
+    <span class="section-badge">Ad-backed, human-first delivery</span>
+    <h2>Start your Instagram growth with Genuine Socials</h2>
+    <p>Purchase services that look organic. We blend ad distribution with gradual delivery so results feel real.</p>
     <div class="ig-features-grid">
         <div class="ig-feature-card">
             <div class="icon">😊</div>
             <h3>Satisfaction Guaranteed</h3>
-            <p>Your success is assured with Famoid. We constantly strive to provide the best-in-class service.</p>
+            <p>Your success is our north star. If something slips, we make it right fast.</p>
         </div>
         <div class="ig-feature-card">
             <div class="icon">📊</div>
@@ -211,10 +211,11 @@ $trustBarFeatures = $firstTag && !empty($firstTag['features']) ? $firstTag['feat
                 <?php
                 for ($i = 0; $i < 2; $i++) {
                     foreach ($testimonials as $testimonial) {
+                        $avatarId = (abs(crc32($testimonial['name'])) % 70) + 1;
                 ?>
                 <div class="testimonial-card">
                     <div class="testimonial-header">
-                        <img src="https://i.pravatar.cc/96?img=<?php echo $testimonial['img']; ?>" alt="<?php echo $testimonial['name']; ?>" class="testimonial-avatar">
+                        <img src="https://i.pravatar.cc/60?img=<?php echo $avatarId; ?>" alt="<?php echo $testimonial['name']; ?>" class="testimonial-avatar">
                         <div class="testimonial-info">
                             <h4><?php echo $testimonial['name']; ?></h4>
                             <span><?php echo $testimonial['date']; ?></span>
@@ -259,7 +260,7 @@ $trustBarFeatures = $firstTag && !empty($firstTag['features']) ? $firstTag['feat
                             <p><?php echo htmlspecialchars($faq['a']); ?></p>
                             <span class="verified">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                                Verified by Famoid Team
+                                Verified by Genuine Socials Team
                             </span>
                         </div>
                     </div>

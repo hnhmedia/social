@@ -1,4 +1,4 @@
--- SocialIG Admin Users Table
+-- Genuine Socials Admin Users Table
 -- Database-driven authentication with encrypted passwords
 -- Table name: si_admin_users (with prefix)
 
@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS `si_admin_users` (
   `password` varchar(255) NOT NULL,
   `name` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
-  `role` enum('admin','super_admin') DEFAULT 'admin',
+  `role` enum('admin','super_admin','seo_manager') DEFAULT 'admin',
   `status` enum('active','inactive') DEFAULT 'active',
   `last_login` datetime DEFAULT NULL,
   `created_at` datetime NOT NULL,
@@ -26,7 +26,7 @@ VALUES (
   'admin', 
   '$2y$12$LQv3c1yycY2bvrXf4h4Qz.8WXKe7D9xwZJE4rKPqADvHlF8FGnXGq', 
   'Administrator', 
-  'admin@socialig.com', 
+  'admin@Genuine Socials.com', 
   'super_admin', 
   'active', 
   NOW()

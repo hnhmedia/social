@@ -2,7 +2,7 @@
 /**
  * User Model
  * 
- * Handles all user-related database operations for the Famoid system
+ * Handles all user-related database operations for the Genuine Socials system
  */
 
 require_once __DIR__ . '/../includes/Database.php';

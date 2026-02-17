@@ -207,11 +207,12 @@ function formatPackagesWithCodes($tags) {
         
         foreach ($packages as $package) {
             $tagPackages[] = [
-                'id' => (int)$package['id'],
-                'qty' => (int)$package['quantity'],
-                'price' => (float)$package['price'],
-                'label' => $package['discount_label'] ?: '',
-                'code' => $package['package_code'] ?: ''
+                'id'             => (int)$package['id'],
+                'qty'            => (int)$package['quantity'],
+                'price'          => (float)$package['price'],
+                'original_price' => $package['original_price'] ? (float)$package['original_price'] : null,
+                'label'          => $package['discount_label'] ?: '',
+                'code'           => $package['package_code'] ?: ''
             ];
         }
         
@@ -361,4 +362,32 @@ function getPackageByCode($code) {
         error_log("Last query: " . $db->getLastQuery());  // ✅ Added debugging
         return null;
     }
+}
+
+/**
+ * Format ALL packages for a service (when no tags exist)
+ * 
+ * @param int $serviceId Service ID
+ * @return array Formatted packages with 'default' key
+ */
+function formatAllPackages($serviceId) {
+    $packages = getServicePackages($serviceId, null);
+    $formatted = [];
+    $tagPackages = [];
+    
+    foreach ($packages as $package) {
+        $tagPackages[] = [
+            'id'             => (int)$package['id'],
+            'qty'            => (int)$package['quantity'],
+            'price'          => (float)$package['price'],
+            'original_price' => $package['original_price'] ? (float)$package['original_price'] : null,
+            'label'          => $package['discount_label'] ?: '',
+            'code'           => $package['package_code'] ?: ''
+        ];
+    }
+    
+    // Use 'default' as the key when no tags
+    $formatted['default'] = $tagPackages;
+    
+    return $formatted;
 }

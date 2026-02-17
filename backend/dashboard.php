@@ -3,8 +3,15 @@ $pageTitle = 'Dashboard';
 require_once 'includes/db.php';
 include 'includes/header.php';
 
+// Redirect SEO managers to SEO section
+if (isSEOManager()) {
+    header('Location: seo_pages.php');
+    exit;
+}
+
 // Get stats
 $stats = getDashboardStats();
+$orderStats = getOrderDashboardStats();
 ?>
 
 <div class="stats-grid">
@@ -37,6 +44,28 @@ $stats = getDashboardStats();
         <div class="stat-info">
             <h3>Total Testimonials</h3>
             <p><?php echo number_format($stats['total_testimonials']); ?></p>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">🗓️</div>
+        <div class="stat-info">
+            <h3>Orders Today</h3>
+            <p><?php echo number_format($orderStats['today_orders']); ?></p>
+            <div style="font-size: 0.9rem; color: #64748b; margin-top: 0.15rem;">
+                $<?php echo number_format($orderStats['today_amount'], 2); ?> today
+            </div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-info">
+            <h3>Needs Processing</h3>
+            <p><?php echo number_format($orderStats['pending_orders'] + $orderStats['processing_orders']); ?></p>
+            <div style="font-size: 0.9rem; color: #64748b; margin-top: 0.15rem;">
+                Pending: <?php echo number_format($orderStats['pending_orders']); ?> · Processing: <?php echo number_format($orderStats['processing_orders']); ?>
+            </div>
         </div>
     </div>
 </div>

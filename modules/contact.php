@@ -1,8 +1,8 @@
 <!-- Contact Hero Section -->
 <section class="contact-hero">
     <div class="hero-inner">
-        <h1>Get in Touch with Famoid</h1>
-        <p class="hero-subtitle">We're here to help you grow your social media presence. Reach out anytime!</p>
+        <h1>Get in Touch with Genuine Socials</h1>
+        <p class="hero-subtitle" style="color:#fff">We're here to help you grow your social media presence. Reach out anytime!</p>
         
         <div class="contact-badges">
             <div class="contact-badge">
@@ -76,7 +76,7 @@
                         <div class="contact-info-icon">📧</div>
                         <div class="contact-info-content">
                             <h4>Email Us</h4>
-                            <p>support@famoid.com</p>
+                            <p>support@genuinesocials.com</p>
                             <span class="contact-info-note">We typically respond within 24 hours</span>
                         </div>
                     </div>
@@ -95,7 +95,7 @@
                         <div class="contact-info-content">
                             <h4>Social Media</h4>
                             <p>Follow us on Instagram & Twitter</p>
-                            <span class="contact-info-note">@famoid</span>
+                            <span class="contact-info-note">@genuinesocials</span>
                         </div>
                     </div>
                     
@@ -111,7 +111,7 @@
                 
                 <!-- Trust Elements -->
                 <div class="contact-trust">
-                    <h3>Why Choose Famoid?</h3>
+                    <h3>Why Choose Genuine Socials?</h3>
                     <ul class="contact-features">
                         <li>✓ 7+ years of experience</li>
                         <li>✓ 50,000+ happy customers</li>

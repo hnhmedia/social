@@ -3,7 +3,7 @@
  * Example Usage File
  * 
  * This file demonstrates how to integrate the database functionality
- * into your existing Famoid website code
+ * into your Genuine Socials website code
  */
 
 // Include the database connection

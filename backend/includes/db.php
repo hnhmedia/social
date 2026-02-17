@@ -19,6 +19,18 @@ $db = new MysqliDb(
 // Set table prefix
 $db->setPrefix($config['database']['prefix']);
 
+// Also create a raw mysqli connection for prepared statements (used by SEO pages)
+$conn = new mysqli(
+    $config['database']['host'],
+    $config['database']['username'],
+    $config['database']['password'],
+    $config['database']['db']
+);
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
 /**
  * Get all users
  */
@@ -33,6 +45,143 @@ function getAllUsers() {
 function getAllOrders() {
     global $db;
     return $db->orderBy('created_at', 'DESC')->get('orders');
+}
+
+/**
+ * Get orders with filters and user info
+ */
+function getOrdersFiltered($filters = []) {
+    global $db;
+    $db->join('users u', 'o.user_id = u.id', 'LEFT');
+
+    if (!empty($filters['status']) && in_array($filters['status'], ['pending','processing','completed','cancelled','refunded'], true)) {
+        $db->where('o.status', $filters['status']);
+    }
+
+    if (!empty($filters['q'])) {
+        $q = '%' . $filters['q'] . '%';
+        $db->where('(o.order_number LIKE ? OR u.email LIKE ? OR o.email LIKE ? OR o.target_url LIKE ? OR o.transaction_id LIKE ?)', [$q, $q, $q, $q, $q]);
+    }
+
+    if (!empty($filters['date'])) {
+        $db->where('DATE(o.created_at)', $filters['date']);
+    }
+
+    if (!empty($filters['payment_method'])) {
+        $db->where('o.payment_method', $filters['payment_method']);
+    }
+
+    if (!empty($filters['amount_min']) && is_numeric($filters['amount_min'])) {
+        $db->where('o.price', (float)$filters['amount_min'], '>=');
+    }
+
+    if (!empty($filters['attention']) && $filters['attention'] === '1') {
+        $db->where("(o.status IN ('pending','processing')) AND o.created_at <= DATE_SUB(NOW(), INTERVAL 24 HOUR)");
+    }
+
+    $db->orderBy('o.created_at', 'DESC');
+    return $db->get('orders o', null, 'o.*, u.email as user_email, u.name as user_name');
+}
+
+// Bulk update statuses
+function updateOrdersStatusBulk($ids = [], $status = 'pending') {
+    global $db;
+    $allowed = ['pending','processing','completed','cancelled','refunded'];
+    if (empty($ids) || !in_array($status, $allowed, true)) {
+        return false;
+    }
+    $db->where('id', $ids, 'IN');
+    return $db->update('orders', [
+        'status' => $status,
+        'updated_at' => date('Y-m-d H:i:s'),
+        'completed_at' => $status === 'completed' ? date('Y-m-d H:i:s') : null
+    ]);
+}
+
+function updateOrderNotes($id, $notes) {
+    global $db;
+    $db->where('id', $id);
+    return $db->update('orders', [
+        'notes' => $notes,
+        'updated_at' => date('Y-m-d H:i:s')
+    ]);
+}
+
+function appendOrderNote($id, $note) {
+    global $db;
+    $current = $db->where('id', $id)->getValue('orders', 'notes');
+    $current = $current ?: '';
+    $timestamp = date('Y-m-d H:i:s');
+    $newNotes = trim($current . "\n[$timestamp] " . $note);
+    $db->where('id', $id);
+    return $db->update('orders', [
+        'notes' => $newNotes,
+        'updated_at' => $timestamp
+    ]);
+}
+
+function getOrderStatusCounts() {
+    global $db;
+    $sql = "SELECT
+        SUM(CASE WHEN status='pending' THEN 1 ELSE 0 END) AS pending,
+        SUM(CASE WHEN status='processing' THEN 1 ELSE 0 END) AS processing,
+        SUM(CASE WHEN status='completed' THEN 1 ELSE 0 END) AS completed,
+        SUM(CASE WHEN status='cancelled' THEN 1 ELSE 0 END) AS cancelled,
+        SUM(CASE WHEN status='refunded' THEN 1 ELSE 0 END) AS refunded,
+        SUM(CASE WHEN status IN ('pending','processing') AND created_at <= DATE_SUB(NOW(), INTERVAL 24 HOUR) THEN 1 ELSE 0 END) AS attention
+        FROM orders";
+    $row = $db->rawQueryOne($sql);
+    return $row ?: [];
+}
+
+/**
+ * Update order status by ID
+ */
+function updateOrderStatusById($id, $status) {
+    global $db;
+    $allowed = ['pending','processing','completed','cancelled','refunded'];
+    if (!in_array($status, $allowed, true)) {
+        return false;
+    }
+    $db->where('id', $id);
+    return $db->update('orders', [
+        'status' => $status,
+        'updated_at' => date('Y-m-d H:i:s'),
+        'completed_at' => $status === 'completed' ? date('Y-m-d H:i:s') : null
+    ]);
+}
+
+/**
+ * Order stats for dashboard
+ */
+function getOrderDashboardStats() {
+    global $db;
+    $today = date('Y-m-d');
+
+    $stats = [
+        'today_orders' => 0,
+        'today_amount' => 0,
+        'pending_orders' => 0,
+        'processing_orders' => 0,
+        'completed_orders' => 0
+    ];
+
+    $db->where('DATE(created_at)', $today);
+    $stats['today_orders'] = (int)$db->getValue('orders', 'COUNT(*)');
+
+    $db->where('DATE(created_at)', $today);
+    $stats['today_amount'] = (float)$db->getValue('orders', 'SUM(price)');
+
+    $db->where('status', 'pending');
+    $stats['pending_orders'] = (int)$db->getValue('orders', 'COUNT(*)');
+
+    $db->where('status', 'processing');
+    $stats['processing_orders'] = (int)$db->getValue('orders', 'COUNT(*)');
+
+    $db->where('status', 'completed');
+    $stats['completed_orders'] = (int)$db->getValue('orders', 'COUNT(*)');
+
+    return $stats;
 }
 
 /**
@@ -226,6 +375,12 @@ function getAdminUserById($id) {
  */
 function createAdminUser($username, $password, $name, $email, $role = 'admin') {
     global $db;
+
+    // Enforce unique username/email
+    $existing = $db->where('username', $username)->orWhere('email', $email)->getOne('admin_users');
+    if ($existing) {
+        return false;
+    }
     
     $hashedPassword = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
     
@@ -247,6 +402,13 @@ function createAdminUser($username, $password, $name, $email, $role = 'admin') {
  */
 function updateAdminUser($id, $name, $email, $role, $status) {
     global $db;
+
+    // Prevent role changes if not super_admin will be enforced upstream
+    // Enforce unique email on update
+    $dupe = $db->where('email', $email)->where('id', $id, '!=')->getOne('admin_users');
+    if ($dupe) {
+        return false;
+    }
     
     $data = [
         'name' => $name,
@@ -308,6 +470,26 @@ function getAllServices() {
     return $db->orderBy('parent_id', 'ASC')->orderBy('display_order', 'ASC')->get('services');
 }
 
+function getServicesFiltered($filters = []) {
+    global $db;
+    if (!empty($filters['q'])) {
+        $q = '%' . $filters['q'] . '%';
+        $db->where('(name LIKE ? OR slug LIKE ? OR service_code LIKE ?)', [$q, $q, $q]);
+    }
+    if (isset($filters['is_active']) && $filters['is_active'] !== '') {
+        $db->where('is_active', $filters['is_active'] ? 1 : 0);
+    }
+    if (!empty($filters['type']) && in_array($filters['type'], ['category','service'], true)) {
+        if ($filters['type'] === 'category') {
+            $db->where('parent_id', null, 'IS');
+        } else {
+            $db->where('parent_id', null, 'IS NOT');
+        }
+    }
+    $db->orderBy('parent_id', 'ASC')->orderBy('display_order', 'ASC');
+    return $db->get('services');
+}
+
 /**
  * Get only categories (parent_id IS NULL)
  */
@@ -347,6 +529,24 @@ function updateService($id, $data) {
     global $db;
     $db->where('id', $id);
     return $db->update('services', $data);
+}
+
+// Inline (partial) update for service status/order/flags
+function updateServiceInline($id, $data) {
+    global $db;
+    $allowed = ['display_order', 'is_active', 'is_featured'];
+    $payload = [];
+    foreach ($allowed as $key) {
+        if (array_key_exists($key, $data)) {
+            $payload[$key] = $data[$key];
+        }
+    }
+    if (empty($payload)) {
+        return false;
+    }
+    $payload['updated_at'] = date('Y-m-d H:i:s');
+    $db->where('id', $id);
+    return $db->update('services', $payload);
 }
 
 /**
@@ -441,6 +641,34 @@ function getAllServicePackages() {
     return $db->orderBy('service_id', 'ASC')->orderBy('display_order', 'ASC')->get('service_packages');
 }
 
+function getPackagesFiltered($filters = []) {
+    global $db;
+
+    if (!empty($filters['q'])) {
+        $q = '%' . $filters['q'] . '%';
+        $db->where('(package_code LIKE ? OR discount_label LIKE ?)', [$q, $q]);
+    }
+
+    if (!empty($filters['service_id']) && is_numeric($filters['service_id'])) {
+        $db->where('service_id', (int)$filters['service_id']);
+    }
+
+    if (!empty($filters['tag_id']) && is_numeric($filters['tag_id'])) {
+        $db->where('tag_id', (int)$filters['tag_id']);
+    }
+
+    if (isset($filters['is_active']) && $filters['is_active'] !== '') {
+        $db->where('is_active', $filters['is_active'] ? 1 : 0);
+    }
+
+    if (isset($filters['is_popular']) && $filters['is_popular'] !== '') {
+        $db->where('is_popular', $filters['is_popular'] ? 1 : 0);
+    }
+
+    $db->orderBy('service_id', 'ASC')->orderBy('display_order', 'ASC');
+    return $db->get('service_packages');
+}
+
 /**
  * Get packages by service
  */
@@ -472,6 +700,24 @@ function updateServicePackage($id, $data) {
     global $db;
     $db->where('id', $id);
     return $db->update('service_packages', $data);
+}
+
+// Inline (partial) update for package flags/order
+function updateServicePackageInline($id, $data) {
+    global $db;
+    $allowed = ['display_order', 'is_active', 'is_popular'];
+    $payload = [];
+    foreach ($allowed as $key) {
+        if (array_key_exists($key, $data)) {
+            $payload[$key] = $data[$key];
+        }
+    }
+    if (empty($payload)) {
+        return false;
+    }
+    $payload['updated_at'] = date('Y-m-d H:i:s');
+    $db->where('id', $id);
+    return $db->update('service_packages', $payload);
 }
 
 /**

@@ -180,15 +180,13 @@ function getOrCreateGuestUser($db, $email) {
  * Determine service type from slug
  * 
  * @param string $slug Service slug
- * @return string Service type (instagram, tiktok, facebook, youtube, etc.)
+ * @return string Service type (instagram, tiktok, youtube, etc.)
  */
 function determineServiceType($slug) {
     if (strpos($slug, 'instagram') !== false) {
         return 'instagram';
     } elseif (strpos($slug, 'tiktok') !== false) {
         return 'tiktok';
-    } elseif (strpos($slug, 'facebook') !== false) {
-        return 'facebook';
     } elseif (strpos($slug, 'youtube') !== false) {
         return 'youtube';
     } elseif (strpos($slug, 'twitter') !== false || strpos($slug, 'x-') !== false) {

@@ -12,6 +12,10 @@ class Config {
      */
     private static function load() {
         if (self::$config === null) {
+            // Load environment overrides if present
+            require_once __DIR__ . '/env.php';
+            loadEnv(__DIR__ . '/../.env');
+
             self::$config = require __DIR__ . '/../config/database.php';
         }
         return self::$config;
@@ -50,7 +54,7 @@ class Config {
         
         if ($path) {
             $path = ltrim($path, '/');
-            return $baseUrl . '/' . $path;
+            return $baseUrl  . $path;
         }
         
         return $baseUrl;
@@ -62,7 +66,7 @@ class Config {
      * @return string
      */
     public static function siteName() {
-        return self::get('site.site_name', 'SocialIG');
+        return self::get('site.site_name', 'Genuine Socials');
     }
     
     /**
@@ -71,7 +75,7 @@ class Config {
      * @return string
      */
     public static function supportEmail() {
-        return self::get('site.support_email', 'support@socialig.com');
+        return self::get('site.support_email', 'support@genuinesocials.com');
     }
     
     /**
@@ -80,7 +84,7 @@ class Config {
      * @return string
      */
     public static function adminEmail() {
-        return self::get('site.admin_email', 'admin@socialig.com');
+        return self::get('site.admin_email', 'admin@genuinesocials.com');
     }
     
     /**
